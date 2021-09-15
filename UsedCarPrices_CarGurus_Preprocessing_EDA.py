@@ -159,18 +159,18 @@ del df1
 # Remove missing from merge due to zipcode not being found in search engine
 df = df[df['vin'].notna()]
 
-print('\nDimensions of Used Car data after removing missing from merge:', df.shape)
+print('\nDimensions of after removing missing from merge:', df.shape)
 print('======================================================================') 
 
 # Examine for other variables unable to impute probalistically
 def data_type_quality_table(df):
         var_type = df.dtypes
         unique_count = df.nunique()
-        mis_val_table = pd.concat([var_type, unique_count], axis=1)
-        mis_val_table_ren_columns = mis_val_table.rename(
+        val_table = pd.concat([var_type, unique_count], axis=1)
+        val_table_ren_columns = val_table.rename(
         columns = {0 : 'Data Type', 1 : 'Number Unique'})
         print ('The selected dataframe has ' + str(df.shape[1]) + ' columns.\n')
-        return mis_val_table_ren_columns
+        return val_table_ren_columns
 
 print('\nData Type & Uniqueness Report') 
 print(data_type_quality_table(df))
@@ -179,12 +179,11 @@ print('======================================================================')
 ###############################################################################
 # Drop vars based off missingness, relevancy and similar var types
 drop_columns = ['vin', 'latitude', 'longitude',  'trimId', 'trim_name', 
-                'sp_id', 'sp_name', 'listing_id', 'model_name', 'description',
-                'listed_date', 'make_name']
+                'sp_id', 'sp_name', 'listing_id',  'description', 'model_name']
 df.drop(columns=drop_columns, inplace=True)
 
 print('\nDimensions after removing irrelevant variables:', df.shape) 
-print('======================================================================') 
+print('=====================================================================') 
 
 ###############################################################################
 # Process categorical that inches abbreviations to continuous vars
@@ -239,14 +238,63 @@ drop_columns = ['major_options', 'engine_cylinders', 'interior_color',
                 'franchise_make', 'transmission_display']
 df.drop(columns=drop_columns, inplace=True)
 
-print('\nDimensions after removing cat vars with high dimensionality:', df.shape) 
+print('\nDimensions after removing cat vars with high dimensionality:',
+      df.shape) 
 print('======================================================================') 
 
 ###############################################################################
-# Write to pickle 
-pd.to_pickle(df, "./210911_UsedCars_Preprocessing.pkl")
+# Examine when the cars were listed 
+# Convert listed date to monthly
+df = df.copy()
+df['listed_date'] = pd.to_datetime(df['listed_date'])
+df['listed_date_yearMonth'] = df['listed_date'].dt.to_period('M')
+
+print('\nCount of listings in each Year-Month:') 
+print(df.listed_date_yearMonth.value_counts(ascending=True)) # Mostly 2020
+print('======================================================================') 
+
+# Filter data for highest occurrences: June-September 2020
+df = df.loc[(df['listed_date_yearMonth'] >= '2020-06')]
+df = df.drop(['year'], axis=1)
+print('\nDimensions after filtering listed_date for highest occurrences: June-September 2020:',
+      df.shape) 
+print('======================================================================') 
+
 ###############################################################################
+# Examine where the cars were listed due to differences in standard of living
+print('\nCount of listings in each US state:') 
+print(df.State.value_counts(ascending=True)) # Texas has the most
+print('======================================================================') 
 
+# Filter states with the 7 highest counts of listings
+df1 = df['State'].value_counts().index[:7]
+df = df[df['State'].isin(df1)]
 
+del df1
 
+print('\nDimensions after filtering US states with the 7 highest counts of listings:',
+      df.shape) 
+print('======================================================================') 
 
+###############################################################################
+# Examine dependent variable: price 
+print('Summary statistics for price:' + ('\n') +  str(round(df['price'].describe()))) 
+print('\n')
+print('Median price: ' +  str(round(df['price'].median(), 2))) 
+print('======================================================================') 
+
+sns.histplot(x=df['price'], kde=True).set_title('Distribution of Price')
+plt.savefig('EDA_initialPrice.png', dpi=my_dpi * 10, bbox_inches='tight')
+
+# Filter price less than $50,000
+df = df.loc[df['price'] <= 50000.0]
+print('\nDimensions after filtering listings <= $50,000:',
+      df.shape) 
+print('======================================================================') 
+sns.histplot(x=df['price'], kde=True).set_title('Distribution of Price Filtered <= $50,000')
+plt.savefig('EDA_Price_50kOrless.png', dpi=my_dpi * 10, bbox_inches='tight')
+
+###############################################################################
+# Write to pickle
+pd.to_pickle(df, "./210914_UsedCars_Preprocessing.pkl")
+###############################################################################

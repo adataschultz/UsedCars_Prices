@@ -22,7 +22,7 @@ os.chdir(path)
 # Read data
 df = pd.read_csv('used_cars_data.csv', low_memory=False)
 df = df.drop_duplicates()
-print('\nDimensions of Initial Used Car Data:', df.shape) 
+print('\nDimensions of initial Used Car Data:', df.shape) 
 print('======================================================================') 
 
 # Replace empty rows with NA
@@ -45,8 +45,9 @@ def missing_values_table(df):
           ' columns that have missing values.')
     return mis_val_table_ren_columns
 
-print('\Initial Missing Data Report') 
+print('\nInitial Missing Data Report') 
 print(missing_values_table(df))
+print('======================================================================') 
 print('======================================================================') 
 
 ###############################################################################
@@ -70,7 +71,7 @@ df = df[df.major_options.notna() & df.mileage.notna() & df.engine_displacement.n
          & df.franchise_make.notna() & df.torque.notna() 
          & df.highway_fuel_economy.notna() & df.city_fuel_economy & df.power.notna()]
 
-print('Dimensions of data when removing missing rows to retain the most columns:')
+print('Dimensions when removing missing rows to retain the most columns:')
 print(df.shape)
 print('======================================================================') 
 
@@ -103,10 +104,13 @@ print('======================================================================')
 # Count of postings in each ye ar >= 2016
 sns.countplot(x='year', data=df).set_title('Count of Postings in Each Year')
 plt.savefig('EDA_Year_2016plus_Count.png', dpi=my_dpi * 10, bbox_inches='tight')
+print('======================================================================') 
 
 ###############################################################################
 # Examine dealer zip code so price isn't guided by location
 # Find length of zipcode as a string
+print('\nZipcode processing:')
+print('\n')
 df['dealer_zip_length'] = df['dealer_zip'].str.len()
 print('\nCount of different lengths of zipcodes:') 
 print(df.dealer_zip_length.value_counts(ascending=False))
@@ -149,7 +153,8 @@ df1['City'] = df1['dealer_zip_unique'].fillna(0).astype(int).apply(zcode_city)
 df = pd.merge(df, df1, how='right', left_on=['city','dealer_zip'], 
               right_on = ['City','dealer_zip_unique'])
 df.drop_duplicates()
-df = df.drop(['dealer_zip_unique', 'City'], axis=1)
+df = df.drop(['dealer_zip_unique', 'City', 'dealer_zip'], axis=1)
+
 print('\nMissing data after merging by city and zipcode:') 
 print(df.isna().sum()) 
 print('======================================================================') 
@@ -159,7 +164,8 @@ del df1
 # Remove missing from merge due to zipcode not being found in search engine
 df = df[df['vin'].notna()]
 
-print('\nDimensions of after removing missing from merge:', df.shape)
+print('\nDimensions after removing missing from merge:', df.shape)
+print('======================================================================') 
 print('======================================================================') 
 
 # Examine for other variables unable to impute probalistically
@@ -175,11 +181,12 @@ def data_type_quality_table(df):
 print('\nData Type & Uniqueness Report') 
 print(data_type_quality_table(df))
 print('======================================================================') 
+print('======================================================================') 
 
 ###############################################################################
 # Drop vars based off missingness, relevancy and similar var types
 drop_columns = ['vin', 'latitude', 'longitude',  'trimId', 'trim_name', 
-                'sp_id', 'sp_name', 'listing_id',  'description', 'model_name']
+                'sp_id', 'sp_name', 'listing_id', 'description']
 df.drop(columns=drop_columns, inplace=True)
 
 print('\nDimensions after removing irrelevant variables:', df.shape) 
@@ -241,9 +248,12 @@ df.drop(columns=drop_columns, inplace=True)
 print('\nDimensions after removing cat vars with high dimensionality:',
       df.shape) 
 print('======================================================================') 
+print('======================================================================') 
 
 ###############################################################################
-# Examine when the cars were listed 
+print('\nExamine when the cars were listed ')
+print('\n')
+
 # Convert listed date to monthly
 df = df.copy()
 df['listed_date'] = pd.to_datetime(df['listed_date'])
@@ -259,9 +269,12 @@ df = df.drop(['year'], axis=1)
 print('\nDimensions after filtering listed_date for highest occurrences: June-September 2020:',
       df.shape) 
 print('======================================================================') 
+print('======================================================================') 
 
 ###############################################################################
-# Examine where the cars were listed due to differences in standard of living
+print('\nExamine where the cars were listed due to differences in standard of living')
+print('\n')
+
 print('\nCount of listings in each US state:') 
 print(df.State.value_counts(ascending=True)) # Texas has the most
 print('======================================================================') 
@@ -274,6 +287,7 @@ del df1
 
 print('\nDimensions after filtering US states with the 7 highest counts of listings:',
       df.shape) 
+print('======================================================================') 
 print('======================================================================') 
 
 ###############################################################################
@@ -293,8 +307,90 @@ print('\nDimensions after filtering listings <= $50,000:',
 print('======================================================================') 
 sns.histplot(x=df['price'], kde=True).set_title('Distribution of Price Filtered <= $50,000')
 plt.savefig('EDA_Price_50kOrless.png', dpi=my_dpi * 10, bbox_inches='tight')
+print('======================================================================') 
+
+###############################################################################
+print('\nExamine categorical variables to see if they should be retained ')
+print('\n')
+df_car_cat = df.select_dtypes(include = 'object')
+df_car_cat = df_car_cat.drop(['city', 'State', 'model_name', 'make_name', 'listing_color'],
+                     axis=1)
+
+# Examine select categorical variables with price
+plt.rcParams.update({'font.size': 7})
+plt.xticks(rotation=90)
+fig, ax = plt.subplots(3, 2, figsize=(15, 10))
+for var, subplot in zip(df_car_cat, ax.flatten()):
+    sns.boxplot(x=var, y='price', data=df, ax=subplot)
+plt.tight_layout()  
+fig.savefig('QualVar_Boxplot.png', dpi=my_dpi * 10, bbox_inches='tight')
+
+del df_car_cat, fig, ax
+
+#  Examine listing_color and price
+plt.rcParams.update({'font.size': 7})
+sorted_nb = df.groupby(['listing_color'])['price'].median().sort_values()
+sns.boxplot(x=df['listing_color'], y=df['price'], order=list(sorted_nb.index))
+plt.xticks(rotation=90)
+plt.savefig('EDA_Price_listing_color.png', dpi=my_dpi * 10, bbox_inches='tight')
+
+print('\nCount of listings with car color:') 
+print(df.listing_color.value_counts(ascending=True)) # Mostly black, UNKNOWN exists
+print('======================================================================') 
+
+# Examine car manufacturer with price
+# Find median price of the manufacturer
+df1 = df.groupby('make_name')['price'].median().reset_index()
+df1.rename(columns={'price': 'make_medianPrice'}, inplace=True)
+print('\nMedian price of the manufacturer:') 
+df1.sort_values('make_medianPrice', ascending=False)
+print('======================================================================') 
+
+# Merge data using left join on manufacturer name
+df = pd.merge(df, df1, how='left', left_on=['make_name'], 
+              right_on = ['make_name'])
+df.drop_duplicates()
+
+del df1
+print('======================================================================') 
+
+###############################################################################
+print('\nExamine quantitative variables to see if they should be retained ')
+print('\n')
+df_num = df.select_dtypes(include = ['float64', 'int64'])
+
+# Histograms
+plt.rcParams.update({'font.size': 15})
+df_num.hist(figsize=(16, 20), bins=50, xlabelsize=8, ylabelsize=8); 
+plt.savefig('EDA_QuantVar_Histograms.png', dpi=my_dpi * 10)
+
+# Correlations
+# Find features that are strongly correlated with `price`
+df_num_corr = df_num.corr()['price'][:-19] # Remove price
+quant_features_list = df_num_corr[abs(df_num_corr) > 0.5].sort_values(ascending=False)
+print("There are {} strongly correlated values with Price:\n{}".format(
+    len(quant_features_list), quant_features_list))
+
+# Create correlation matrix
+df_num = df_num.drop(['price'], axis=1)
+corr = df_num.corr(method="spearman") # 
+
+# Plot correlation matrix
+plt.rcParams.update({'font.size': 6})
+sns.heatmap(corr, cmap='viridis', vmax=1.0, vmin=-1.0, linewidths=0.1, 
+            annot=False, square=True);
+plt.title('Correlation Matrix with Spearman rho')
+plt.savefig('EDA_correlationMatrix_spearman.png', dpi=my_dpi * 10)
+
+# Plot correlation matrix with thresholds
+plt.rcParams.update({'font.size': 6})
+sns.heatmap(corr[(corr >= 0.8) | (corr <= -0.8)], 
+            cmap='viridis', vmax=1.0, vmin=-1.0, linewidths=0.1,
+            square=True);
+plt.title('Correlation Matrix with Spearman rho >= 0.8 or <= -0.8')
+plt.savefig('EDA_correlationMatrix_thresholds_spearman.png', dpi=my_dpi * 10)
 
 ###############################################################################
 # Write to pickle
-pd.to_pickle(df, "./210914_UsedCars_Preprocessing.pkl")
+pd.to_pickle(df, "./210915_UsedCars_Preprocessing.pkl")
 ###############################################################################

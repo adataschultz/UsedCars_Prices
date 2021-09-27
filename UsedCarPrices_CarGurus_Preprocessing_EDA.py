@@ -2,6 +2,7 @@
 """
 @author: aschu
 """
+import random
 import os
 import pandas as pd
 import numpy as np
@@ -11,6 +12,12 @@ from uszipcode import SearchEngine
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
+
+# Set seed 
+seed_value = 42
+os.environ['UsedCarPrices_CarGurus_PreprocessingEDA'] = str(seed_value)
+random.seed(seed_value)
+np.random.seed(seed_value)
 
 print('\nUsed Car Prices from CarGurus Preprocessing & EDA')
 print('======================================================================')
@@ -251,7 +258,7 @@ print('======================================================================')
 print('======================================================================') 
 
 ###############################################################################
-print('\nExamine when the cars were listed ')
+print('\nExamine when the cars were listed:')
 print('\n')
 
 # Convert listed date to monthly
@@ -265,14 +272,14 @@ print('======================================================================')
 
 # Filter data for highest occurrences: June-September 2020
 df = df.loc[(df['listed_date_yearMonth'] >= '2020-06')]
-df = df.drop(['year'], axis=1)
+
 print('\nDimensions after filtering listed_date for highest occurrences: June-September 2020:',
       df.shape) 
 print('======================================================================') 
 print('======================================================================') 
 
 ###############################################################################
-print('\nExamine where the cars were listed due to differences in standard of living')
+print('\nExamine where the cars were listed due to differences in standard of living:')
 print('\n')
 
 print('\nCount of listings in each US state:') 
@@ -305,12 +312,13 @@ df = df.loc[df['price'] <= 50000.0]
 print('\nDimensions after filtering listings <= $50,000:',
       df.shape) 
 print('======================================================================') 
+
 sns.histplot(x=df['price'], kde=True).set_title('Distribution of Price Filtered <= $50,000')
 plt.savefig('EDA_Price_50kOrless.png', dpi=my_dpi * 10, bbox_inches='tight')
 print('======================================================================') 
 
 ###############################################################################
-print('\nExamine categorical variables to see if they should be retained ')
+print('\nExamine categorical variables to see if they should be retained:')
 print('\n')
 df_car_cat = df.select_dtypes(include = 'object')
 df_car_cat = df_car_cat.drop(['city', 'State', 'model_name', 'make_name', 'listing_color'],
@@ -338,12 +346,25 @@ print('\nCount of listings with car color:')
 print(df.listing_color.value_counts(ascending=True)) # Mostly black, UNKNOWN exists
 print('======================================================================') 
 
+# Filter observations with the highest number counts for listing color
+df1 = df['listing_color'].value_counts().index[:7]
+df = df[df['listing_color'].isin(df1)]
+
+del df1
+
+# Remove listings with unknown colors
+df = df.loc[df['listing_color'] != 'UNKNOWN']
+
+print('\nDimensions after filtering observations with the highest number counts for listing color:',
+      df.shape) 
+print('======================================================================') 
+
 # Examine car manufacturer with price
 # Find median price of the manufacturer
 df1 = df.groupby('make_name')['price'].median().reset_index()
 df1.rename(columns={'price': 'make_medianPrice'}, inplace=True)
 print('\nMedian price of the manufacturer:') 
-df1.sort_values('make_medianPrice', ascending=False)
+print(df1.sort_values('make_medianPrice', ascending=False))
 print('======================================================================') 
 
 # Merge data using left join on manufacturer name
@@ -352,10 +373,13 @@ df = pd.merge(df, df1, how='left', left_on=['make_name'],
 df.drop_duplicates()
 
 del df1
+
+# Drop var due to similarity and high dimensionality 
+df = df.drop(['city', 'make_name', 'model_name', 'wheel_system'], axis=1)
 print('======================================================================') 
 
 ###############################################################################
-print('\nExamine quantitative variables to see if they should be retained ')
+print('\nExamine quantitative variables to see if they should be retained:')
 print('\n')
 df_num = df.select_dtypes(include = ['float64', 'int64'])
 
@@ -376,21 +400,29 @@ df_num = df_num.drop(['price'], axis=1)
 corr = df_num.corr(method="spearman") # 
 
 # Plot correlation matrix
-plt.rcParams.update({'font.size': 6})
+plt.rcParams.update({'font.size': 2})
 sns.heatmap(corr, cmap='viridis', vmax=1.0, vmin=-1.0, linewidths=0.1, 
             annot=False, square=True);
 plt.title('Correlation Matrix with Spearman rho')
 plt.savefig('EDA_correlationMatrix_spearman.png', dpi=my_dpi * 10)
 
 # Plot correlation matrix with thresholds
-plt.rcParams.update({'font.size': 6})
+plt.rcParams.update({'font.size': 2})
 sns.heatmap(corr[(corr >= 0.8) | (corr <= -0.8)], 
             cmap='viridis', vmax=1.0, vmin=-1.0, linewidths=0.1,
-            square=True);
+            annot=True, annot_kws={"size": 4}, square=True);
 plt.title('Correlation Matrix with Spearman rho >= 0.8 or <= -0.8')
 plt.savefig('EDA_correlationMatrix_thresholds_spearman.png', dpi=my_dpi * 10)
 
 ###############################################################################
-# Write to pickle
-pd.to_pickle(df, "./210915_UsedCars_Preprocessing.pkl")
+# Drop vars not using for modeling
+drop_columns = ['seller_rating', 'make_medianPrice', 'listed_date']
+df.drop(columns=drop_columns, inplace=True)
+
+print('\nDimensions of data for modeling:', df.shape) 
+print('=====================================================================') 
+###############################################################################
+
+# Write processed data to csv
+df.to_csv('usedCars_final.csv', index=False, encoding='utf-8-sig')
 ###############################################################################

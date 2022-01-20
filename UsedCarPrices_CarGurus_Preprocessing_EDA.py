@@ -89,7 +89,9 @@ print('Average year in data: ' +  str(round(df['year'].mean(), 2)))
 print('======================================================================') 
 
 # Change path for EDA results
-path = r'D:\UsedCarPrices_CarGurus\EDA'
+path = r'D:\Documents-D\Becoming_a_DS_DE\Portfolio Design\Kaggle Data Sets\US Used Cars dataset Cargurus\EDA'
+path = r'D:\Documents-D\Becoming_a_DS_DE\Portfolio Design\Kaggle Data Sets\US Used Cars dataset Cargurus\EDA'
+#path = r'D:\UsedCarPrices_CarGurus\EDA'
 os.chdir(path)
 
 # Count of postings in each year
@@ -418,11 +420,13 @@ plt.savefig('EDA_correlationMatrix_thresholds_spearman.png', dpi=my_dpi * 10)
 # Drop vars not using for modeling
 drop_columns = ['seller_rating', 'make_medianPrice', 'listed_date']
 df.drop(columns=drop_columns, inplace=True)
-
 print('\nDimensions of data for modeling:', df.shape) 
 print('=====================================================================') 
-###############################################################################
 
+###############################################################################
+# Change directory
+path = r'D:\UsedCarPrices_CarGurus\Data'
+os.chdir(path)
 # Write processed data to csv
 df.to_csv('usedCars_final.csv', index=False, encoding='utf-8-sig')
 ###############################################################################

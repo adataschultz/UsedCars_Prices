@@ -166,7 +166,7 @@ best_param = fmin(objective, param_grid, algo=tpe.suggest,
                   max_evals=NUM_EVAL, trials=bayesOpt_trials,
                   rstate= np.random.RandomState(42))
 
-# Sort the trials with lowest loss (highest AUC) first
+# Sort the trials with lowest loss first
 bayesOpt_trials_results = sorted(bayesOpt_trials.results, 
                                  key = lambda x: x['loss'])
 print('Top two trials with the lowest loss (lowest RMSE)')

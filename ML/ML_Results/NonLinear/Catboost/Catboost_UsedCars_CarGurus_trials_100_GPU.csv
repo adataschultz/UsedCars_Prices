@@ -1,0 +1,6 @@
+loss,params,iteration,train_time
+3791.5958129402934,"{'depth': 6, 'iterations': 192, 'l2_leaf_reg': 0.3262527785293697, 'learning_rate': 0.0208084971279939, 'min_data_in_leaf': 12, 'one_hot_max_size': 11}",1,30.497511905003194
+2636.4086419114346,"{'depth': 6, 'iterations': 302, 'l2_leaf_reg': 0.419977446160683, 'learning_rate': 0.20107736968585346, 'min_data_in_leaf': 7, 'one_hot_max_size': 16}",2,35.13607465499808
+2483.502113084475,"{'depth': 10, 'iterations': 268, 'l2_leaf_reg': 0.6048754674323772, 'learning_rate': 0.19136095300609385, 'min_data_in_leaf': 2, 'one_hot_max_size': 16}",3,49.38639170299939
+2726.3478903008977,"{'depth': 7, 'iterations': 104, 'l2_leaf_reg': 0.11381056696717652, 'learning_rate': 0.2756248842486461, 'min_data_in_leaf': 7, 'one_hot_max_size': 2}",4,28.138835686000675
+2553.113248646942,"{'depth': 9, 'iterations': 243, 'l2_leaf_reg': 0.9809105399603928, 'learning_rate': 0.1435898198616081, 'min_data_in_leaf': 8, 'one_hot_max_size': 15}",5,40.32007778899788

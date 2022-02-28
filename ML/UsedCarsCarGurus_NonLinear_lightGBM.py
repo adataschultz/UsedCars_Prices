@@ -239,7 +239,7 @@ bayes_params['loss'] = results['loss']
 bayes_params['iteration'] = results['iteration']
 
 # Save dataframes of parameters
-bayes_params.to_csv('bayes_paramslightGBM_HPO_UsedCars_CarGurus_100.csv', 
+bayes_params.to_csv('bayes_params_lightGBM_HPO_UsedCars_CarGurus_100.csv', 
                     index = False)
 
 # Convert data types for graphing
@@ -333,7 +333,7 @@ explanation = eli.explain_weights_sklearn(perm_importance,
 exp = format_as_dataframe(explanation)
 
 # Write processed data to csv
-exp.to_csv('UsedCarPrices_CarGurus_best_bayes_UsedCars_CarGurus_100_WeightsExplain.csv',
+exp.to_csv('best_bayes_UsedCars_CarGurus_100_WeightsExplain.csv',
            index=False, encoding='utf-8-sig')
 
 # Show prediction
@@ -466,7 +466,7 @@ bayes_params['loss'] = results['loss']
 bayes_params['iteration'] = results['iteration']
 
 # Save dataframes of parameters
-bayes_params.to_csv('bayes_paramslightGBM_HPO_UsedCars_CarGurus_300.csv', 
+bayes_params.to_csv('bayes_params_lightGBM_HPO_UsedCars_CarGurus_300.csv', 
                     index = False)
 
 # Convert data types for graphing
@@ -560,7 +560,7 @@ explanation = eli.explain_weights_sklearn(perm_importance,
 exp = format_as_dataframe(explanation)
 
 # Write processed data to csv
-exp.to_csv('UsedCarPrices_CarGurus_best_bayes_UsedCars_CarGurus_300_WeightsExplain.csv',
+exp.to_csv('best_bayes_UsedCars_CarGurus_300_WeightsExplain.csv',
            index=False, encoding='utf-8-sig')
 
 # Show prediction
@@ -693,7 +693,7 @@ bayes_params['loss'] = results['loss']
 bayes_params['iteration'] = results['iteration']
 
 # Save dataframes of parameters
-bayes_params.to_csv('bayes_paramslightGBM_HPO_UsedCars_CarGurus_500.csv', 
+bayes_params.to_csv('bayes_params_lightGBM_HPO_UsedCars_CarGurus_500.csv', 
                     index = False)
 
 # Convert data types for graphing
@@ -787,7 +787,7 @@ explanation = eli.explain_weights_sklearn(perm_importance,
 exp = format_as_dataframe(explanation)
 
 # Write processed data to csv
-exp.to_csv('UsedCarPrices_CarGurus_best_bayes_UsedCars_CarGurus_500_WeightsExplain.csv',
+exp.to_csv('best_bayes_UsedCars_CarGurus_500_WeightsExplain.csv',
            index=False, encoding='utf-8-sig')
 
 # Show prediction
@@ -920,7 +920,7 @@ bayes_params['loss'] = results['loss']
 bayes_params['iteration'] = results['iteration']
 
 # Save dataframes of parameters
-bayes_params.to_csv('bayes_paramslightGBM_HPO_UsedCars_CarGurus_1000.csv', 
+bayes_params.to_csv('bayes_params_lightGBM_HPO_UsedCars_CarGurus_1000.csv', 
                     index = False)
 
 # Convert data types for graphing
@@ -1014,7 +1014,7 @@ explanation = eli.explain_weights_sklearn(perm_importance,
 exp = format_as_dataframe(explanation)
 
 # Write processed data to csv
-exp.to_csv('UsedCarPrices_CarGurus_best_bayes_UsedCars_CarGurus_1000_WeightsExplain.csv',
+exp.to_csv('best_bayes_UsedCars_CarGurus_1000_WeightsExplain.csv',
            index=False, encoding='utf-8-sig')
 
 # Show prediction
@@ -1158,7 +1158,7 @@ bayes_params['loss'] = results['loss']
 bayes_params['iteration'] = results['iteration']
 
 # Save dataframes of parameters
-bayes_params.to_csv('bayes_paramslightGBM_HPO_UsedCars_CarGurus_gbdt_100.csv', 
+bayes_params.to_csv('bayes_params_lightGBM_HPO_UsedCars_CarGurus_gbdt_100.csv', 
                     index = False)
 
 # Convert data types for graphing
@@ -1250,7 +1250,7 @@ explanation = eli.explain_weights_sklearn(perm_importance,
 exp = format_as_dataframe(explanation)
 
 # Write processed data to csv
-exp.to_csv('UsedCarPrices_CarGurus_best_bayes_UsedCars_CarGurus_GBDT_100_WeightsExplain.csv',
+exp.to_csv('best_bayes_UsedCars_CarGurus_GBDT_100_WeightsExplain.csv',
            index=False, encoding='utf-8-sig')
 
 # Show prediction
@@ -1381,7 +1381,7 @@ bayes_params['loss'] = results['loss']
 bayes_params['iteration'] = results['iteration']
 
 # Save dataframes of parameters
-bayes_params.to_csv('bayes_paramslightGBM_HPO_UsedCars_CarGurus_gbdt_500.csv', 
+bayes_params.to_csv('bayes_params_lightGBM_HPO_UsedCars_CarGurus_gbdt_500.csv', 
                     index = False)
 
 # Convert data types for graphing
@@ -1473,7 +1473,7 @@ explanation = eli.explain_weights_sklearn(perm_importance,
 exp = format_as_dataframe(explanation)
 
 # Write processed data to csv
-exp.to_csv('UsedCarPrices_CarGurus_best_bayes_UsedCars_CarGurus_GBDT_500_WeightsExplain.csv',
+exp.to_csv('best_bayes_UsedCars_CarGurus_GBDT_500_WeightsExplain.csv',
            index=False, encoding='utf-8-sig')
 
 # Show prediction

@@ -58,8 +58,12 @@ print(missing_values_table(df))
 print('======================================================================') 
 
 ###############################################################################
-# Drop main_picture_url due to not useful
-df = df.drop(['main_picture_url'], axis=1) 
+# Drop vars based off missingness, relevancy and similar var types
+drop_columns = ['main_picture_url', 'vin', 'trimId', 'trim_name', 
+                'sp_id', 'sp_name', 'listing_id', 'description']
+df.drop(columns=drop_columns, inplace=True)
+
+print('\nDimensions after removing irrelevant variables:', df.shape) 
 
 # Remove columns with more than 20% missing
 df = df.loc[:, df.isnull().mean() < 0.20]
@@ -71,9 +75,9 @@ print('======================================================================')
 # Remove missing rows to retain the most columns
 df = df[df.major_options.notna() & df.mileage.notna() & df.engine_displacement.notna() 
          & df.transmission_display.notna() & df.seller_rating.notna()
-         & df.engine_cylinders.notna() & df.description.notna() 
+         & df.engine_cylinders.notna() 
          & df.back_legroom.notna() & df.wheel_system.notna() 
-         & df.trim_name.notna() & df.interior_color.notna() 
+         & df.interior_color.notna() 
          & df.body_type.notna() & df.exterior_color.notna()  
          & df.franchise_make.notna() & df.torque.notna() 
          & df.highway_fuel_economy.notna() & df.city_fuel_economy & df.power.notna()]
@@ -83,13 +87,13 @@ print(df.shape)
 print('======================================================================') 
 
 ###############################################################################
-# Examine year to maintain price comparisons
-print('Average year:' +  str(round(df['year'].mean(), 2))) 
-print('======================================================================') 
-
 # Change path for EDA results
 path = r'D:\UsedCarPrices_CarGurus\EDA'
 os.chdir(path)
+
+# Examine year to maintain price comparisons
+print('Average year:' +  str(round(df['year'].mean(), 0))) 
+print('======================================================================') 
 
 # Count of postings in each year
 plt.rcParams.update({'font.size': 7})
@@ -109,6 +113,43 @@ print('======================================================================')
 # Count of postings in each year >= 2016
 sns.countplot(x='year', data=df).set_title('Count of Postings in Each Year')
 plt.savefig('Year_2016plus_Count.png', dpi=my_dpi * 10, bbox_inches='tight')
+print('======================================================================') 
+
+print('\nExamine when the cars were listed:')
+print('\n')
+
+# Convert listed date to monthly
+df = df.copy()
+df['listed_date'] = pd.to_datetime(df['listed_date'])
+df['listed_date_yearMonth'] = df['listed_date'].dt.to_period('M')
+
+print('\nCount of listings in each Year-Month:') 
+print(df.listed_date_yearMonth.value_counts(ascending=False)) # Mostly 2020
+print('======================================================================') 
+
+# Filter data for highest occurrences: June-September 2020
+df = df.loc[(df['listed_date_yearMonth'] >= '2020-06')]
+
+print('\nDimensions after filtering listed_date for highest occurrences: June-September 2020:',
+      df.shape) 
+print('======================================================================') 
+
+###############################################################################
+print('\nExamine where the cars were listed due to differences in standard of living:')
+print('\n')
+
+print('\nCount of listings in each US state:') 
+print(df.State.value_counts(ascending=False)) # Texas has the most
+print('======================================================================') 
+
+# Filter states with the 7 highest counts of listings
+df1 = df['State'].value_counts().index[:7]
+df = df[df['State'].isin(df1)]
+
+del df1
+
+print('\nDimensions after filtering US states with the 7 highest counts of listings:',
+      df.shape) 
 print('======================================================================') 
 
 ###############################################################################
@@ -133,11 +174,11 @@ df['dealer_zip'] = df['dealer_zip'].astype('int64')
 df1 = df.dealer_zip
 df1 = df1.unique().tolist()
 df1 = pd.DataFrame(df1)
-print('\nNumber of unique zipcodes:', df1.shape) 
-print('======================================================================') 
-
 # Name columns so it can be used for query
 df1.columns = ['dealer_zip_unique']
+
+print('\nNumber of unique zipcodes:', df1.shape[0]) 
+print('======================================================================') 
 
 # Use zipcode to find the state and city corresponding to zipcode
 search = SearchEngine(simple_zipcode=False)
@@ -167,7 +208,7 @@ print('======================================================================')
 del df1
 
 # Remove missing from merge due to zipcode not being found in search engine
-df = df[df['vin'].notna()]
+df = df[df['mileage'].notna()]
 
 print('\nDimensions after removing missing from merge:', df.shape)
 print('======================================================================') 
@@ -186,14 +227,15 @@ print('\nData Type & Uniqueness Report')
 print(data_type_quality_table(df))
 print('======================================================================') 
 
-###############################################################################
-# Drop vars based off missingness, relevancy and similar var types
-drop_columns = ['vin', 'latitude', 'longitude',  'trimId', 'trim_name', 
-                'sp_id', 'sp_name', 'listing_id', 'description']
+# Drop vars due to high dimensionality of categorical vars
+drop_columns = ['major_options', 'engine_cylinders', 'interior_color',
+                'exterior_color', 'engine_type', 'franchise_dealer',
+                'franchise_make', 'transmission_display']
 df.drop(columns=drop_columns, inplace=True)
 
-print('\nDimensions after removing irrelevant variables:', df.shape) 
-print('=====================================================================') 
+print('\nDimensions after removing cat vars with high dimensionality:',
+      df.shape) 
+print('======================================================================') 
 
 ###############################################################################
 # Process categorical that inches abbreviations to continuous vars
@@ -227,7 +269,7 @@ df.rename(columns={'torque_new': 'torque'}, inplace=True)
 
 del df1
 
-#Convert power into horsepower_rpm
+# Convert power into horsepower_rpm
 df1 = df.power.str.replace(',', '').str.split().str[0:4:3]
 df1 = pd.DataFrame([[np.nan, np.nan] if type(i).__name__ == 'float' else np.asarray(i).astype('float') for i in df1])
 df1.columns = ['horsepower_new', 'horsepower_rpm']
@@ -241,54 +283,6 @@ df = df[df.horsepower_rpm.notna()]
 df.rename(columns={'horsepower_new': 'horsepower'}, inplace=True)
 
 del df1
-
-# Drop vars due to high dimensionality of categorical vars
-drop_columns = ['major_options', 'engine_cylinders', 'interior_color',
-                'exterior_color', 'engine_type', 'power', 'franchise_dealer',
-                'franchise_make', 'transmission_display']
-df.drop(columns=drop_columns, inplace=True)
-
-print('\nDimensions after removing cat vars with high dimensionality:',
-      df.shape) 
-print('======================================================================') 
-
-###############################################################################
-print('\nExamine when the cars were listed:')
-print('\n')
-
-# Convert listed date to monthly
-df = df.copy()
-df['listed_date'] = pd.to_datetime(df['listed_date'])
-df['listed_date_yearMonth'] = df['listed_date'].dt.to_period('M')
-
-print('\nCount of listings in each Year-Month:') 
-print(df.listed_date_yearMonth.value_counts(ascending=True)) # Mostly 2020
-print('======================================================================') 
-
-# Filter data for highest occurrences: June-September 2020
-df = df.loc[(df['listed_date_yearMonth'] >= '2020-06')]
-
-print('\nDimensions after filtering listed_date for highest occurrences: June-September 2020:',
-      df.shape) 
-print('======================================================================') 
-
-###############################################################################
-print('\nExamine where the cars were listed due to differences in standard of living:')
-print('\n')
-
-print('\nCount of listings in each US state:') 
-print(df.State.value_counts(ascending=True)) # Texas has the most
-print('======================================================================') 
-
-# Filter states with the 7 highest counts of listings
-df1 = df['State'].value_counts().index[:7]
-df = df[df['State'].isin(df1)]
-
-del df1
-
-print('\nDimensions after filtering US states with the 7 highest counts of listings:',
-      df.shape) 
-print('======================================================================') 
 
 ###############################################################################
 # Examine dependent variable: price 

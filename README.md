@@ -30,7 +30,7 @@ Models were trained using:
 
 
 #### HPO
-For hyperparameter tuning, `hyperopt` and `optuna` were utilized to explore the model parameters that resulted in the lowest error (`rmse`). Various trial/experiment sizes were completed to determine which parameters when incorporated into the model resulted in the lowest error.
+For hyperparameter tuning, `hyperopt` and `optuna` were utilized to explore the model parameters that resulted in the lowest error (`rmse`). Various trial/experiment sizes were completed to determine which parameters when incorporated into the model resulted in the lowest error. `Weights & Biases` was utilized for examining the models during HPO.
 
 
 #### Model Explanations

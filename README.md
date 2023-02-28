@@ -26,8 +26,8 @@ The data was processed for missingness, relevancy and high dimensionality of cat
 Models were trained using:
 - `XGBoost` 
 - `Catboost` 
-- `Lightgbm`
-- `RAPIDS`: Logistic/Ridge/Elastic Net, LinearSVR, Random Forest, XGBoost, Catboost, Lightgbm, Nearest Neighbors Regression
+- `LightGBM`
+- `RAPIDS`: Logistic/Ridge/Elastic Net, LinearSVR, Random Forest, XGBoost, Catboost, LightGBM, Nearest Neighbors Regression
 
 
 #### HPO
@@ -36,6 +36,10 @@ For hyperparameter tuning, `hyperopt` and `optuna` were utilized to explore the 
 
 #### Model Explanations
 To explain the results from modeling, `eli5`, `shap` and `lime` were utilized.
+
+
+#### Testing Various GPUs
+Using `XGBoost`, `Catboost` and `LightGBM`, various GPUs (`Quadro RTX 4000`, `Quadro RTX 5000`, `RTX A4000`, `Quadro P5000`) were tested using set parameters and various hyperparameter spaces with tracking using `Weights & Biases`.
 
 
 ### Deep Learning

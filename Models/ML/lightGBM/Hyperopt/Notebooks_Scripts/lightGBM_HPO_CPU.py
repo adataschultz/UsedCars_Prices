@@ -94,13 +94,12 @@ param_grid = {
                                                   'subsample': 1.0}]),
     'colsample_bytree': hp.uniform('colsample_by_tree', 0.6, 1.0),
     'reg_alpha': hp.uniform('reg_alpha', 0.0, 1.0),
-    'reg_lambda': hp.uniform('reg_lambda', 0.0, 1.0),
+    'reg_lambda': hp.uniform('reg_lambda', 0.0, 1.0)
     }
 
 # Define an objective function
 def objective(params, n_folds=N_FOLDS):
     """lightGBM HPO"""
-    
     # Keep track of evals
     global ITERATION
     
@@ -297,10 +296,10 @@ plt.show()
 fig, axs = plt.subplots(1, 3, figsize=(20,5))
 i = 0
 for i, hpo in enumerate(['learning_rate', 'num_leaves', 'colsample_bytree']): 
-        # Scatterplot
-        sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
-        axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
-                   title='{} over Trials'.format(hpo))
+    # Scatterplot
+    sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
+    axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
+               title='{} over Trials'.format(hpo))
 plt.tight_layout()
 plt.show()
 
@@ -308,9 +307,9 @@ plt.show()
 fig, axs = plt.subplots(1, 2, figsize=(14,6))
 i = 0
 for i, hpo in enumerate(['reg_alpha', 'reg_lambda']):
-        sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
-        axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
-                   title='{} over Trials'.format(hpo))
+    sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
+    axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
+               title='{} over Trials'.format(hpo))
 plt.tight_layout()
 plt.show()
 
@@ -542,10 +541,10 @@ plt.show()
 fig, axs = plt.subplots(1, 3, figsize=(20,5))
 i = 0
 for i, hpo in enumerate(['learning_rate', 'num_leaves', 'colsample_bytree']): 
-        # Scatterplot
-        sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
-        axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
-                   title='{} over Trials'.format(hpo))
+    # Scatterplot
+    sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
+    axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
+               title='{} over Trials'.format(hpo))
 plt.tight_layout()
 plt.show()
 
@@ -553,9 +552,9 @@ plt.show()
 fig, axs = plt.subplots(1, 2, figsize=(14,6))
 i = 0
 for i, hpo in enumerate(['reg_alpha', 'reg_lambda']):
-        sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
-        axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
-                   title='{} over Trials'.format(hpo))
+    sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
+    axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
+               title='{} over Trials'.format(hpo))
 plt.tight_layout()
 plt.show()
 
@@ -782,10 +781,10 @@ plt.show()
 fig, axs = plt.subplots(1, 3, figsize=(20,5))
 i = 0
 for i, hpo in enumerate(['learning_rate', 'num_leaves', 'colsample_bytree']): 
-        # Scatterplot
-        sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
-        axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
-                   title='{} over Trials'.format(hpo))
+    # Scatterplot
+    sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
+    axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
+               title='{} over Trials'.format(hpo))
 plt.tight_layout()
 plt.show()
 
@@ -793,9 +792,9 @@ plt.show()
 fig, axs = plt.subplots(1, 2, figsize=(14,6))
 i = 0
 for i, hpo in enumerate(['reg_alpha', 'reg_lambda']):
-        sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
-        axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
-                   title='{} over Trials'.format(hpo))
+    sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
+    axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
+               title='{} over Trials'.format(hpo))
 plt.tight_layout()
 plt.show()
 
@@ -1022,10 +1021,10 @@ plt.show()
 fig, axs = plt.subplots(1, 3, figsize=(20,5))
 i = 0
 for i, hpo in enumerate(['learning_rate', 'num_leaves', 'colsample_bytree']): 
-        # Scatterplot
-        sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
-        axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
-                   title='{} over Trials'.format(hpo))
+    # Scatterplot
+    sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
+    axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
+               title='{} over Trials'.format(hpo))
 plt.tight_layout()
 plt.show()
 
@@ -1033,9 +1032,9 @@ plt.show()
 fig, axs = plt.subplots(1, 2, figsize=(14,6))
 i = 0
 for i, hpo in enumerate(['reg_alpha', 'reg_lambda']):
-        sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
-        axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
-                   title='{} over Trials'.format(hpo))
+    sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
+    axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
+               title='{} over Trials'.format(hpo))
 plt.tight_layout()
 plt.show()
 
@@ -1123,7 +1122,7 @@ param_grid = {
                                                                           0.3, 
                                                                           1)}]),
     'reg_alpha': hp.uniform('reg_alpha', 0.0, 1.0),
-    'reg_lambda': hp.uniform('reg_lambda', 0.0, 1.0),
+    'reg_lambda': hp.uniform('reg_lambda', 0.0, 1.0)
     }
 
 # File to save first results
@@ -1276,10 +1275,10 @@ plt.show()
 fig, axs = plt.subplots(1, 3, figsize=(20,5))
 i = 0
 for i, hpo in enumerate(['learning_rate', 'num_leaves', 'colsample_bytree']): 
-        # Scatterplot
-        sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
-        axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
-                   title='{} over Trials'.format(hpo))
+    # Scatterplot
+    sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
+    axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
+               title='{} over Trials'.format(hpo))
 plt.tight_layout()
 plt.show()
 
@@ -1287,9 +1286,9 @@ plt.show()
 fig, axs = plt.subplots(1, 2, figsize=(14,6))
 i = 0
 for i, hpo in enumerate(['reg_alpha', 'reg_lambda']):
-        sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
-        axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
-                   title='{} over Trials'.format(hpo))
+    sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
+    axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
+               title='{} over Trials'.format(hpo))
 plt.tight_layout()
 plt.show()
 
@@ -1515,10 +1514,10 @@ plt.show()
 fig, axs = plt.subplots(1, 3, figsize=(20,5))
 i = 0
 for i, hpo in enumerate(['learning_rate', 'num_leaves', 'colsample_bytree']): 
-        # Scatterplot
-        sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
-        axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
-                   title='{} over Trials'.format(hpo))
+    # Scatterplot
+    sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
+    axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
+               title='{} over Trials'.format(hpo))
 plt.tight_layout()
 plt.show()
 
@@ -1526,9 +1525,9 @@ plt.show()
 fig, axs = plt.subplots(1, 2, figsize=(14,6))
 i = 0
 for i, hpo in enumerate(['reg_alpha', 'reg_lambda']):
-        sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
-        axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
-                   title='{} over Trials'.format(hpo))
+    sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
+    axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
+               title='{} over Trials'.format(hpo))
 plt.tight_layout()
 plt.show()
 

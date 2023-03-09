@@ -81,13 +81,12 @@ catboost_tune_kwargs= {
     'min_data_in_leaf': hp.choice('min_data_in_leaf', np.arange(2, 20, 
                                                                 dtype=int)),
     'one_hot_max_size': hp.choice('one_hot_max_size', np.arange(2, 20, 
-                                                                dtype=int)),  
+                                                                dtype=int))  
     }
 
 # Define a function for optimization of hyperparameters
 def catboost_hpo(config):
     """Catboost HPO"""
-    
     # Keep track of evaluations
     global ITERATION
     
@@ -100,15 +99,14 @@ def catboost_hpo(config):
     config['depth'] = int(config['depth']) + 3
  
     # Define model type
-    cat = CatBoostRegressor(
-        loss_function='RMSE',
-        task_type='GPU',
-        cat_features=categorical_features_indices,
-        early_stopping_rounds=10,
-        rsm=1,
-        random_state=seed_value,        
-        logging_level='Silent',
-        **config)
+    cat = CatBoostRegressor(loss_function='RMSE',
+                            task_type='GPU', 
+                            cat_features=categorical_features_indices, 
+                            early_stopping_rounds=10, 
+                            rsm=1, 
+                            random_state=seed_value, 
+                            logging_level='Silent', 
+                            **config)
     
     # Start timer for each trial
     start = timer()
@@ -283,10 +281,10 @@ fig, axs = plt.subplots(1, 3, figsize=(20,5))
 i = 0
 for i, hpo in enumerate(['learning_rate', 'min_data_in_leaf', 
                          'one_hot_max_size']):
-        # Scatterplot
-        sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
-        axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
-                   title='{} over Trials'.format(hpo))
+    # Scatterplot
+    sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
+    axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
+               title='{} over Trials'.format(hpo))
 plt.tight_layout()
 plt.show()
 
@@ -571,10 +569,10 @@ fig, axs = plt.subplots(1, 3, figsize=(20,5))
 i = 0
 for i, hpo in enumerate(['learning_rate', 'min_data_in_leaf', 
                          'one_hot_max_size']):
-        # Scatterplot
-        sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
-        axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
-                   title='{} over Trials'.format(hpo))
+    # Scatterplot
+    sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
+    axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
+               title='{} over Trials'.format(hpo))
 plt.tight_layout()
 plt.show()
 

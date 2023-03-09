@@ -105,13 +105,15 @@ def xgb_hpo_gpu(config):
     config['max_depth'] = int(config['max_depth']) + 3
     
     # Define model type
-    xgb = XGBRegressor(
-        objective='reg:squarederror',
-        booster='gbtree', 
-        tree_method='gpu_hist', 
-        scale_pos_weight=1,
-        random_state=seed_value,
-        **config)
+    xgb = XGBRegressor(objective='reg:squarederror',
+                       booster='gbtree',
+                       tree_method='gpu_hist',
+                       scale_pos_weight=1,
+                       use_label_encoder=False,
+                       early_stopping_rounds=10,
+                       random_state=seed_value,
+                       verbosity=0, 
+                       **config)
     
     # Start timer for each trial
     start = timer()
@@ -291,7 +293,7 @@ for i, hpo in enumerate(['learning_rate', 'gamma', 'colsample_bylevel',
     # Scatterplot
     sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
     axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
-                   title='{} over Trials'.format(hpo))
+               title='{} over Trials'.format(hpo))
 plt.tight_layout()
 plt.show()
 
@@ -545,7 +547,7 @@ for i, hpo in enumerate(['learning_rate', 'gamma', 'colsample_bylevel',
     # Scatterplot
     sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
     axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
-                   title='{} over Trials'.format(hpo))
+               title='{} over Trials'.format(hpo))
 plt.tight_layout()
 plt.show()
 

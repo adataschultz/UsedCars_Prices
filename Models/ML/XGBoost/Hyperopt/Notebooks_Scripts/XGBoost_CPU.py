@@ -101,14 +101,14 @@ def xgb_cpu(config):
     config['max_depth'] = int(config['max_depth']) + 3
     
     # Define model type
-    xgb = XGBRegressor(
-        objective='reg:squarederror',
-        booster='gbtree',   
-        scale_pos_weight=1,
-        random_state=seed_value,
-        n_jobs=-1,
-        **config)
-    
+    xgb = XGBRegressor(objective='reg:squarederror',
+                       booster='gbtree',
+                       scale_pos_weight=1,
+                       random_state=seed_value,
+                       n_jobs=-1,
+                       verbosity=0, 
+                       **config)
+                       
     # Start timer for each trial
     start = timer()
     
@@ -292,7 +292,7 @@ for i, hpo in enumerate(['learning_rate', 'gamma', 'colsample_bylevel',
     # Scatterplot
     sns.regplot('iteration', hpo, data=bayes_params, ax=axs[i])
     axs[i].set(xlabel='Iteration', ylabel='{}'.format(hpo), 
-                   title='{} over Trials'.format(hpo))
+               title='{} over Trials'.format(hpo))
 plt.tight_layout()
 plt.show()
 

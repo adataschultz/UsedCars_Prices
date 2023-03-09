@@ -39,7 +39,7 @@ To explain the results from modeling, `eli5`, `shap` and `lime` were utilized.
 
 
 #### Testing Various GPUs
-Using `XGBoost`, `Catboost` and `LightGBM`, various GPUs (`Quadro RTX 4000`, `Quadro RTX 5000`, `RTX A4000`, `Quadro P5000`) were tested using set parameters and various hyperparameter spaces with tracking using `Weights & Biases`.
+Using `XGBoost`, `Catboost` and `LightGBM`, various GPUs (`Quadro RTX 4000`, `Quadro RTX 5000`, `RTX A4000`, `Quadro P5000`) were tested using set parameters and various hyperparameter spaces. Subsequently, set parameters using only a `Quadro RTX 4000` and a set number of `Optuna` trials were utilized to compare hyperparameter optimization with/without `cuML` using a train/test split using a `XGBoost DMatrix`, `Scikit-Learn Wrapper interface for XGBoost` and differing cross validation (3, 5 and 10-fold) using `xgboost.cv`. `Weights & Biases` was used for tracking.
 
 
 ### Deep Learning

@@ -56,7 +56,9 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
                                                     random_state=seed_value)
 
 # Set categorical variables for Catboost
-categorical_features_indices = np.where(X.dtypes != np.float)[0]
+categorical_features_indices = ['body_type', 'fuel_type', 'listing_color',
+                                'transmission', 'wheel_system_display', 'State',
+                                'listed_date_yearMonth']
 
 # Set path for ML results
 path = r'D:\UsedCarsCarGurus\Models\ML\Catboost\Hyperopt\trialOptions'

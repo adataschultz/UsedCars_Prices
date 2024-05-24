@@ -1,0 +1,22 @@
+steps:
+  # Build the Docker Compose services
+  - name: 'docker/compose:2.27.0'
+    entrypoint: '/bin/sh'  # Use the shell available in Alpine Linux
+    args:
+      - '-c'
+      - |
+        docker-compose build \
+          --build-arg PROJECT_ID=$PROJECT_ID \
+          --build-arg SHORT_SHA=$SHORT_SHA
+
+  # Tag the built images with the desired tags
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['tag', 'workspace_backend:latest', 'us-east1-docker.pkg.dev/$PROJECT_ID/UsedCars_Prices/Deploy/app_usedCars/myimage:$SHORT_SHA-backend']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['tag', 'workspace_frontend:latest', 'us-east1-docker.pkg.dev/$PROJECT_ID/UsedCars_Prices/Deploy/app_usedCars/myimage:$SHORT_SHA-frontend']
+
+  # Push the tagged images to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-east1-docker.pkg.dev/$PROJECT_ID/UsedCars_Prices/Deploy/app_usedCars/myimage:$SHORT_SHA-backend']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-east1-docker.pkg.dev/$PROJECT_ID/UsedCars_Prices/Deploy/app_usedCars/myimage:$SHORT_SHA-frontend']

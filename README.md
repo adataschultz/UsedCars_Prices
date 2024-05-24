@@ -12,7 +12,7 @@ In this project, the various features of cars including the price of used cars w
 
 
 ## `Data`
-The `used_cars_data` was retrieved from [here](https://www.kaggle.com/ananaymital/us-used-cars-dataset). The individal who posted the data used a webcrawler on the Cargurus inventory in September 2020. This data contains a vast amount of information about the physical and mechanical components of cars that can provide insight into what might contribute to the increase in value of a vehicle.
+The `used_cars_data` was retrieved from [Kaggle](https://www.kaggle.com/ananaymital/us-used-cars-dataset). The individal who posted the data used a webcrawler on the Cargurus inventory in September 2020. This data contains a vast amount of information about the physical and mechanical components of cars that can provide insight into what might contribute to the increase in value of a vehicle.
 
 
 ## `Preprocessing`

@@ -72,9 +72,11 @@ async def predict(file: bytes = File(...)):
     file_obj = io.BytesIO(file)
     test_df = pd.read_csv(file_obj)
 
+    # Set up target and features
     price = test_df[['price']]
     test_df = test_df.drop(['price'], axis=1)
     
+    # Create dummy variables
     testDF = pd.get_dummies(test_df, drop_first=True)
     
     # Get the model's features in the correct order
@@ -84,11 +86,13 @@ async def predict(file: bytes = File(...)):
     # Use col to reindex the prediction DataFrame
     test = testDF.reindex(columns=cols) # -> df now has the same col ordering as the model
     
+    # Define categorical features
     categorical_features_indices = ['body_type', 'fuel_type', 'listing_color','transmission', 'wheel_system_display', 'State','listed_date_yearMonth', 'is_new']
 
+    # Convert to DMatric
     dtest = xgb.DMatrix(testDF, label=price)
 
-    # Generate predictions with best model (output is H2O frame)
+    # Generate predictions with various models, calculate difference between actual vs. predicted
     preds_lgb = model_lgb.predict(test)
     preds_lgb = pd.DataFrame(preds_lgb.T, columns=['predicted_price'])
     df_lgb = pd.concat([price, preds_lgb], axis=1)
@@ -110,12 +114,10 @@ async def predict(file: bytes = File(...)):
     df_xgb['predicted_percentageDiff'] = (df_xgb['predicted_difference'] / df_xgb['price']) * 100
     df_xgb['algorithm'] = 'XGBoost'
     
-    df = np.concatenate([df_lgb, df_cat, df_xgb])
-    print(df)
-    
-    preds_final = pd.DataFrame(df, columns=['price', 'predicted_price', 'predicted_difference', 'predicted_percentageDiff', 'algorithm'])
+    # Concatenate, convert to dataframe and dictionary
+    preds_final = np.concatenate([df_lgb, df_cat, df_xgb])
+    preds_final = pd.DataFrame(preds_final, columns=['price', 'predicted_price', 'predicted_difference', 'predicted_percentageDiff', 'algorithm'])
     preds_final = preds_final.to_dict()
-    print(preds_final)
     
     # Convert predictions into JSON format
     json_compatible_item_data = jsonable_encoder(preds_final)

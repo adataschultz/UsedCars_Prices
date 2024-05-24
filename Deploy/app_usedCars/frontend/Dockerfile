@@ -1,10 +1,14 @@
 # Use a Python-based image
 #FROM nvcr.io/nvidia/rapidsai/base:24.04-cuda11.2-py3.10
-
 FROM python:3.10-slim
 
+# Set working directory
 WORKDIR /frontend                                                                                                     
-RUN apt-get update && apt-get install -y     python3-pip                                                          
+
+# Update
+RUN apt-get update && apt-get install -y python3-pip                                                          
+
+# Copy data, models, code, requirements
 COPY /data/usedCars_trainSet.csv /data/usedCars_trainSet.csv                                                            
 COPY /data/usedCars_testSet.csv /data/usedCars_testSet.csv                                                             
 COPY /xgboost/model/usedcars_xgb_model.bin /xgboost/model/usedcars_xgb_model.bin                                       
@@ -15,12 +19,13 @@ COPY /lightgbm/model/usedcars_lgbm_model.pkl /lightgbm/model/usedcars_lgbm_model
 COPY /lightgbm/results /lightgbm/results                                                                                
 COPY /static /static                                                                                                   
 COPY app.py .                                                                                                           
-COPY requirements.txt requirements.txt                                                                                 
+COPY requirements.txt requirements.txt   
+
+# Upgrade pip and install requirements                                                                              
 RUN pip3 install --upgrade pip --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY . .
-
 
 # Expose port
 EXPOSE 8501

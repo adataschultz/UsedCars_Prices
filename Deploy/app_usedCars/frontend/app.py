@@ -29,7 +29,7 @@ from io import StringIO, BytesIO
 warnings.filterwarnings('ignore')
 
 seed_value = 42
-os.environ['usedCars_catGPU'] = str(seed_value)
+os.environ['usedCars_GPU'] = str(seed_value)
 random.seed(seed_value)
 np.random.seed(seed_value)
 

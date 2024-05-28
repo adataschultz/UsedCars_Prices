@@ -27,10 +27,13 @@ ENV LGB_MODEL_DIR=/lightgbm/model/usedcars_lgbm_model.pkl
 # Copy requirements.txt and install dependencies
 COPY . .
 
+USER root
+
 RUN pip3 install --upgrade pip --no-cache-dir -r requirements.txt
 
 # Expose port
 EXPOSE 8000
 
 # Run the application
+
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

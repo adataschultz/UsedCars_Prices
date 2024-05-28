@@ -8,6 +8,12 @@ WORKDIR /frontend
 # Update
 RUN apt-get update && apt-get install -y python3-pip                                                          
 
+# Create volume and copy
+VOLUME /data
+VOLUME /xgboost/model
+VOLUME /catboost/model
+VOLUME /lightgbm/model
+
 # Copy data, models, code, requirements
 COPY /data/usedCars_trainSet.csv /data/usedCars_trainSet.csv                                                            
 COPY /data/usedCars_testSet.csv /data/usedCars_testSet.csv                                                             
@@ -24,6 +30,12 @@ COPY requirements.txt requirements.txt
 # Upgrade pip and install requirements                                                                              
 RUN pip3 install --upgrade pip --no-cache-dir -r requirements.txt
 
+ENV TRAIN_DATA_DIR=/data/usedCars_trainSet.csv
+ENV TEST_DATA_DIR=/data/usedCars_testSet.csv
+ENV XGB_MODEL_DIR=/xgboost/model/usedcars_xgb_model.bin
+ENV CAT_MODEL_DIR=/catboost/model/usedcars_cat_model
+ENV LGB_MODEL_DIR=/lightgbm/model/usedcars_lgbm_model.pkl
+
 # Copy application code
 COPY . .
 
@@ -31,4 +43,4 @@ COPY . .
 EXPOSE 8501
 
 # Run the application
-CMD ["python", "run", "streamlit", "app.py"]
+CMD ["python", "-m", "streamlit", "run", "app.py"]

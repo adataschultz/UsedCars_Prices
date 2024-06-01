@@ -34,8 +34,8 @@ random.seed(seed_value)
 np.random.seed(seed_value)
 
 # Path of the data
-TRAIN_DATA_DIR = '../data/usedCars_trainSet.csv'
-TEST_DATA_DIR = '../data/usedCars_testSet.csv'
+os.environ['TRAIN_DATA_DIR'] = '../data/usedCars_trainSet.csv'
+os.environ['TEST_DATA_DIR'] = '../data/usedCars_testSet.csv'
 
 # Load data
 @st.cache_data
@@ -53,6 +53,22 @@ st.title('Pricing of Used Cars')
 
 trainDF, testDF = load_data()
 
+col1, col2 , col3 = st.columns(3)
+
+with col2:    
+# dict for the dataframes and their names
+    dfs = {'Training Set' : trainDF, 'Test Set': testDF}
+
+# plot the data
+    fig = go.Figure()
+
+    for i in dfs:
+        fig = fig.add_trace(go.Box(x=dfs[i]['State'],
+                                   y=dfs[i]['price'], 
+                                   name=i))
+        fig.update_layout(title='Train/Test Sets: Price of Vehicles in Different States')
+    st.plotly_chart(fig)
+    
 col1, col2 , col3 = st.columns(3)
 
 with col1:
@@ -103,21 +119,6 @@ with col1:
 
 with col2:
     fig = px.bar(testDF, x='State', y='daysonmarket', color='listing_color', title='Test Set: Number of Days on Market of Different Colored Vehicles Per State')
-    st.plotly_chart(fig)
-
-col1, col2 , col3 = st.columns(3)
-
-with col2:    
-# dict for the dataframes and their names
-    dfs = {'Training Set' : trainDF, 'Test Set': testDF}
-
-# plot the data
-    fig = go.Figure()
-
-    for i in dfs:
-        fig = fig.add_trace(go.Box(x=dfs[i]['State'],
-                                   y=dfs[i]['price'], 
-                                   name=i))
     st.plotly_chart(fig)
 
 ###################################################################################################################
@@ -182,9 +183,9 @@ with col2:
 ###################################################################################################################
 ###################################################################################################################
 # Load models
-LGB_MODEL_DIR = '../lightgbm/model/usedcars_lgbm_model.pkl'
-CAT_MODEL_DIR = '../catboost/model/usedcars_cat_model'
-XGB_MODEL_DIR = '../xgboost/model/usedcars_xgb_model.bin'
+os.environ['LGB_MODEL_DIR'] = '../lightgbm/model/usedcars_lgbm_model.pkl'
+os.environ['CAT_MODEL_DIR'] = '../catboost/model/usedcars_cat_model'
+os.environ['XGB_MODEL_DIR'] = '../xgboost/model/usedcars_xgb_model.bin'
 
 def load_lgb_model():
     lgb_path = os.environ['LGB_MODEL_DIR']
@@ -244,7 +245,6 @@ st.write('R^2 train: %.3f, test: %.3f' % (
 
 st.subheader('LightGBM: Feature Importance', divider='blue')
 
-#st.write('LightGBM: Feature Importance')
 st.image('../lightgbm/results/LGBM_FeatureImportance.png')
 
 # SHAP
@@ -287,7 +287,6 @@ st.write('R^2 train: %.3f, test: %.3f' % (
 
 st.subheader('Catboost: Feature Importance', divider='blue')
 
-#st.write('Catboost: Feature Importance')
 st.image('../catboost/results/Cat_FeatureImportance.png')
 
 # SHAP
@@ -330,7 +329,6 @@ st.write('R^2 train: %.3f, test: %.3f' % (
 
 st.subheader('XGBoost: Feature Importance', divider='blue')
 
-#st.write('XGBoost: Feature Importance')
 st.image('../xgboost/results/XGB_FeatureImportance.png')
 
 # SHAP
@@ -356,7 +354,9 @@ with col2:
 st.subheader('Upload Data and Predict the Price Given the Features:', divider='blue')
 # Set FastAPI endpoint
 #endpoint = 'http://localhost:8000/predict'
-endpoint = 'http://172.17.0.1:8000/predict' # Specify this path for Dockerization to work
+#endpoint = 'http://172.17.0.1:8000/predict' # Specify this path for Dockerization
+#endpoint = 'http://backend-api.default.svc.cluster.local:80/predict' # Specify this path for cloud
+endpoint = 'https://app-usedcars-backend-6rtfkkrflq-uc.a.run.app/predict' # Specify this path for GCP cloud
 
 test_csv = st.file_uploader('Choose a file', key=1)
 if test_csv is not None:

@@ -53,7 +53,7 @@ model_cat = load_cat_model()
 model_xgb = load_xgb_model()
 
 @app.get("/")
-async def main():
+async def open():
     content = """
     <body>
     <h2> Welcome to the End to End Used Cars Project</h2>
@@ -122,3 +122,6 @@ async def predict(file: bytes = File(...)):
     # Convert predictions into JSON format
     json_compatible_item_data = jsonable_encoder(preds_final)
     return JSONResponse(content=json_compatible_item_data)
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=80, log_level="info", reload=True)

@@ -2,7 +2,7 @@ services:
   backend:
     build: backend/
     ports: 
-      - "8000:8000"
+      - "80:80"
     volumes:
       - ./backend:/app/backend
     networks:

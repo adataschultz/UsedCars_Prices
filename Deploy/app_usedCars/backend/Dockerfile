@@ -35,5 +35,4 @@ RUN pip3 install --upgrade pip --no-cache-dir -r requirements.txt
 EXPOSE 80
 
 # Run the application
-
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]

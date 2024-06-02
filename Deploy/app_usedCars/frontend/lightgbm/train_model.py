@@ -32,11 +32,11 @@ def main():
     ###################
     #<prepare the data>
     ###################
-    train_path = '../data/usedCars_trainSet.csv'
-    trainDF = pd.read_csv(train_path, low_memory=False)
+    train_path = '../data/usedCars_trainSet.parquet.gzip'
+    trainDF = pd.read_parquet(train_path)
 
-    test_path = '../data/usedCars_testSet.csv'
-    testDF = pd.read_csv(test_path, low_memory=False)
+    test_path = '../data/usedCars_testSet.parquet.gzip'
+    testDF = pd.read_parquet(test_path)
         
     train_label = trainDF[['price']]
     train_features = trainDF.drop(columns=['price'])

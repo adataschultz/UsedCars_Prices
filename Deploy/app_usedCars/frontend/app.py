@@ -34,17 +34,17 @@ random.seed(seed_value)
 np.random.seed(seed_value)
 
 # Path of the data
-os.environ['TRAIN_DATA_DIR'] = '../data/usedCars_trainSet.csv'
-os.environ['TEST_DATA_DIR'] = '../data/usedCars_testSet.csv'
+os.environ['TRAIN_DATA_DIR'] = '../data/usedCars_trainSet.parquet.gzip'
+os.environ['TEST_DATA_DIR'] = '../data/usedCars_testSet.parquet.gzip'
 
 # Load data
 @st.cache_data
 def load_data():
     try:
         train_data_path = os.environ['TRAIN_DATA_DIR']
-        train_data = pd.read_csv(train_data_path)
+        train_data = pd.read_parquet(train_data_path)
         test_data_path = os.environ['TEST_DATA_DIR']
-        test_data = pd.read_csv(test_data_path)
+        test_data = pd.read_parquet(test_data_path)
         return train_data, test_data
     except Exception as ex:
         raise(f'Error in loading file: {ex}', str(ex))
@@ -187,17 +187,20 @@ os.environ['LGB_MODEL_DIR'] = '../lightgbm/model/usedcars_lgbm_model.pkl'
 os.environ['CAT_MODEL_DIR'] = '../catboost/model/usedcars_cat_model'
 os.environ['XGB_MODEL_DIR'] = '../xgboost/model/usedcars_xgb_model.bin'
 
+@st.cache_resource
 def load_lgb_model():
     lgb_path = os.environ['LGB_MODEL_DIR']
     model = joblib.load(open(lgb_path,'rb'))
     return model
 
+@st.cache_resource
 def load_cat_model():
     cat_path = os.environ['CAT_MODEL_DIR']
     model = CatBoostRegressor()
     model.load_model(cat_path)
     return model
 
+@st.cache_resource
 def load_xgb_model():
     xgb_path = os.environ['XGB_MODEL_DIR']
     model = xgb.Booster()

@@ -21,11 +21,6 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import matplotlib.pyplot as plt
 import seaborn as sns
 import shap
-import requests
-from requests import ConnectionError
-import json
-import io
-from io import StringIO, BytesIO
 warnings.filterwarnings('ignore')
 
 seed_value = 42
@@ -41,8 +36,8 @@ os.chdir(path)
 @st.cache_data
 def load_data():
     try:
-        train_data = pd.read_csv(path + '/data/usedCars_trainSet.csv')
-        test_data = pd.read_csv(path + '/data/usedCars_testSet.csv')
+        train_data = pd.read_parquet(path + '/data/usedCars_trainSet.parquet.gzip')
+        test_data = pd.read_parquet(path + '/data/usedCars_testSet.parquet.gzip')
         return train_data, test_data
     except Exception as ex:
         raise(f'Error in loading file: {ex}', str(ex))
@@ -185,17 +180,20 @@ os.environ['LGB_MODEL_DIR'] = path + '/lightgbm/model/usedcars_lgbm_model.pkl'
 os.environ['CAT_MODEL_DIR'] = path + '/catboost/model/usedcars_cat_model'
 os.environ['XGB_MODEL_DIR'] = path + '/xgboost/model/usedcars_xgb_model.bin'
 
+@st.cache_resource
 def load_lgb_model():
     lgb_path = os.environ['LGB_MODEL_DIR']
     model = joblib.load(open(lgb_path,'rb'))
     return model
 
+@st.cache_resource
 def load_cat_model():
     cat_path = os.environ['CAT_MODEL_DIR']
     model = CatBoostRegressor()
     model.load_model(cat_path)
     return model
 
+@st.cache_resource
 def load_xgb_model():
     xgb_path = os.environ['XGB_MODEL_DIR']
     model = xgb.Booster()
@@ -347,51 +345,6 @@ with col1:
 
 with col2:
    st.image(path + '/xgboost/results/XGB_ShapForce_TestSet.png')
-
-###################################################################################################################
-st.subheader('Upload Data and Predict the Price Given the Features:', divider='blue')
-# Set FastAPI endpoint
-#endpoint = 'http://localhost:8000/predict'
-#endpoint = 'http://172.17.0.1:8000/predict' # Specify this path for Dockerization
-#endpoint = 'http://backend-api.default.svc.cluster.local:80/predict' # Specify this path for cloud
-endpoint = 'https://app-usedcars-backend-6rtfkkrflq-uc.a.run.app/predict' # Specify this path for GCP cloud
-
-test_csv = st.file_uploader('Choose a file', key=1)
-if test_csv is not None:
-    # To read file as bytes:
-    bytes_data = test_csv.getvalue()
-
-    # Can be used wherever a 'file-like' object is accepted:
-    test_df = pd.read_csv(test_csv)
-
-    st.subheader('Sample of Uploaded Dataset')
-    st.write(test_df.head())
-
-    # Convert dataframe to BytesIO object (for parsing as file into FastAPI later)
-    test_bytes_obj = io.BytesIO()
-    test_df.to_csv(test_bytes_obj, index=False)  # write to BytesIO buffer
-    test_bytes_obj.seek(0) # Reset pointer to avoid EmptyDataError
-
-    files = {'file': ('test_dataset.csv', test_bytes_obj, 'multipart/form-data')}
-
-    # Upon click of button
-    if st.button('Start Prediction'):
-        if len(test_df) == 0:
-            st.write('Please upload a valid test dataset!')  # handle case with no data
-        else:
-            with st.spinner('Prediction in Progress. Please Wait...'):
-                result = requests.post(endpoint, 
-                                       files=files,
-                                       timeout=8000)
-            st.success('Success! 📥  Download button below to get prediction results')
-            #print(result1)
-            st.write(result)
-            st.write(data=json.dumps(result.json()))
-            st.download_button(
-                label='Download',
-                data=json.dumps(result.json()), # Download as JSON file object
-                file_name='results_predictedPriceComparisons.json'
-            )
             
 ###################################################################################################################
 link = 'Made by [Andrew Schultz](https://github.com/adataschultz/)'

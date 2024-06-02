@@ -28,13 +28,11 @@ def main():
         ###################
         #<prepare the data>
         ###################
-        train_path = '../data/usedCars_trainSet.csv'
-        trainDF = pd.read_csv(train_path, low_memory=False)
-        #trainDF  = trainDF.sample(frac=0.4, random_state=42)
+        train_path = '../data/usedCars_trainSet.parquet.gzip'
+        trainDF = pd.read_parquet(train_path)
 
-        test_path = '../data/usedCars_testSet.csv'
-        testDF = pd.read_csv(test_path, low_memory=False)
-        #testDF = testDF.sample(frac=0.4, random_state=42)
+        test_path = '../data/usedCars_testSet.parquet.gzip'
+        testDF = pd.read_parquet(test_path)
 
         train_label = trainDF[['price']]
         test_label = testDF[['price']]
@@ -82,7 +80,7 @@ def main():
 
         usedcars_cat_model = CatBoostRegressor(**param)
 
-        usedcars_cat_model.fit(train_features, train_label, eval_set=[(test_features, test_label)], cat_features=categorical_features_indices)#, verbose=0)
+        usedcars_cat_model.fit(train_features, train_label, eval_set=[(test_features, test_label)], cat_features=categorical_features_indices)
 
         print('\nModel Metrics for Used Cars Catboost')
         y_train_pred = usedcars_cat_model.predict(train_features)
@@ -163,8 +161,6 @@ def main():
 
         plot_feature_importance(usedcars_cat_model.get_feature_importance(),
                                 train_features.columns, 'Catboost')
-        #plt.tight_layout()
-        #plt.savefig('./results/Cat_FeatureImportance.png', dpi=my_dpi*10, bbox_inches='tight');
         
         # SHAP   
         shap_explainer = shap.TreeExplainer(usedcars_cat_model)

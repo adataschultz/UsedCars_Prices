@@ -1,7 +1,6 @@
 # Import Needed Libraries
 import os
 import uvicorn
-from fastapi import FastAPI
 from fastapi import FastAPI, File
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse, HTMLResponse
@@ -14,10 +13,9 @@ import xgboost as xgb
 from xgboost import XGBRegressor
 import joblib
 import io
-from io import StringIO
-from io import BytesIO
+from io import StringIO, BytesIO
 
-#uvicorn  main:app --port 8050
+#uvicorn  main:app --port 80
 
 # Create the FastAPI application
 app = FastAPI(title='Used Car Price Prediction API', version='1.0',
@@ -25,22 +23,26 @@ app = FastAPI(title='Used Car Price Prediction API', version='1.0',
 
 categorical_features_indices = ['body_type', 'fuel_type', 'listing_color','transmission', 'wheel_system_display', 'State','listed_date_yearMonth', 'is_new']
 
-LGB_MODEL_DIR = '../lightgbm/model/usedcars_lgbm_model.pkl'
-CAT_MODEL_DIR = '../catboost/model/usedcars_cat_model'
-XGB_MODEL_DIR = '../xgboost/model/usedcars_xgb_model.bin'
+# Load models
+os.environ['LGB_MODEL_DIR'] = '../lightgbm/model/usedcars_lgbm_model.pkl'
+os.environ['CAT_MODEL_DIR'] = '../catboost/model/usedcars_cat_model'
+os.environ['XGB_MODEL_DIR'] = '../xgboost/model/usedcars_xgb_model.bin'
 
 # Path to the model
+@st.cache_resource
 def load_lgb_model():
     lgb_path = os.environ['LGB_MODEL_DIR']
     model = joblib.load(open(lgb_path,'rb'))
     return model
 
+@st.cache_resource
 def load_cat_model():
     cat_path = os.environ['CAT_MODEL_DIR']
     model = CatBoostRegressor()
     model.load_model(cat_path)
     return model
 
+@st.cache_resource
 def load_xgb_model():
     xgb_path = os.environ['XGB_MODEL_DIR']
     model = xgb.Booster()
@@ -52,21 +54,21 @@ model_lgb = load_lgb_model()
 model_cat = load_cat_model()
 model_xgb = load_xgb_model()
 
-@app.get("/")
+@app.get('/')
 async def open():
-    content = """
+    content = '''
     <body>
     <h2> Welcome to the End to End Used Cars Project</h2>
     <p> The model and FastAPI instances have been set up successfully </p>
     <p> You can view the FastAPI UI by heading to localhost:8000 </p>
     <p> Proceed to initialize the Streamlit UI (frontend/app.py) to submit prediction requests </p>
     </body>
-    """
+    '''
     return HTMLResponse(content=content)
 
 # ML API endpoint for making prediction aganist the request received from client
 # Create POST endpoint with path '/predict'
-@app.post("/predict")
+@app.post('/predict')
 async def predict(file: bytes = File(...)):
     print('[+] Initiate Prediction')
     file_obj = io.BytesIO(file)
@@ -123,5 +125,5 @@ async def predict(file: bytes = File(...)):
     json_compatible_item_data = jsonable_encoder(preds_final)
     return JSONResponse(content=json_compatible_item_data)
 
-if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=80, log_level="info", reload=True)
+if __name__ == '__main__':
+    uvicorn.run('main:app', host='0.0.0.0', port=80, log_level='info', reload=True)

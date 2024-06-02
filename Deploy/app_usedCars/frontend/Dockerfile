@@ -15,8 +15,8 @@ VOLUME /catboost/model
 VOLUME /lightgbm/model
 
 # Copy data, models, code, requirements
-COPY /data/usedCars_trainSet.csv /data/usedCars_trainSet.csv                                                            
-COPY /data/usedCars_testSet.csv /data/usedCars_testSet.csv                                                             
+COPY /data/usedCars_trainSet.parquet.gzip /data/usedCars_trainSet.parquet.gzip                                                          
+COPY /data/usedCars_testSet.parquet.gzip /data/usedCars_testSet.parquet.gzip                                                           
 COPY /xgboost/model/usedcars_xgb_model.bin /xgboost/model/usedcars_xgb_model.bin                                       
 COPY /xgboost/results /xgboost/results                                                                                 
 COPY /catboost/model/usedcars_cat_model /catboost/model/usedcars_cat_model                                             
@@ -30,8 +30,8 @@ COPY requirements.txt requirements.txt
 # Upgrade pip and install requirements                                                                              
 RUN pip3 install --upgrade pip --no-cache-dir -r requirements.txt
 
-ENV TRAIN_DATA_DIR=/data/usedCars_trainSet.csv
-ENV TEST_DATA_DIR=/data/usedCars_testSet.csv
+ENV TRAIN_DATA_DIR=/data/usedCars_trainSet.parquet.gzip
+ENV TEST_DATA_DIR=/data/usedCars_testSet.parquet.gzip
 ENV XGB_MODEL_DIR=/xgboost/model/usedcars_xgb_model.bin
 ENV CAT_MODEL_DIR=/catboost/model/usedcars_cat_model
 ENV LGB_MODEL_DIR=/lightgbm/model/usedcars_lgbm_model.pkl

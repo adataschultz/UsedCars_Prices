@@ -150,7 +150,7 @@ def main():
                   'feature_importance': feature_importance}
             fi_df = pd.DataFrame(data)
             fi_df.sort_values(by=['feature_importance'], ascending=False, inplace=True)
-            fig = plt.figure(figsize=(15,10))
+            fig = plt.figure(figsize=(10,5))
             sns.barplot(x=fi_df['feature_importance'], y=fi_df['feature_names'],
                         palette='cool')
             plt.title(model_type + ' Feature Importance')
@@ -170,52 +170,54 @@ def main():
 
         shap_values_train = shap_explainer.shap_values(train_features, train_label, check_additivity=False)
 
-        sv_filename = './model/Cat_shap_values_train.pkl'
+        shap_val_filename = './model/Cat_shap_values_train.pkl'
 
-        joblib.dump(shap_values_train, filename=sv_filename, compress=('bz2', 9))
+        joblib.dump(shap_values_train, filename=shap_val_filename, compress=('bz2', 9))
 
         #ex_filename = './model/Cat_ShapExplainer.pkl'
         #shap_explainer = joblib.load(filename=ex_filename)
         
-        #shap_val_filename = './model/Cat_Shap_values_train.pkl'
+        #shap_val_filename = './model/Cat_shap_values_train.pkl'
         #shap_values_train = joblib.load(filename=shap_val_filename)
 
-        plt.rcParams.update({'font.size': 5})
-        fig = plt.figure(figsize=(5,10))
-        shap.summary_plot(shap_values_train, train_features, show=False)
-        plt.title('Train Set: SHAP Summary Plot', y=1.1, fontsize=14)
+        plt.rcParams.update({'font.size': 1})
+        fig = plt.figure(figsize=(1,1))
+        shap.summary_plot(shap_values_train, train_features, plot_size=[6,6], show=False)
+        plt.title('Train Set: SHAP Summary Plot', y=1.3, fontsize=10)
         plt.tight_layout()
         plt.savefig('./results/Cat_ShapSummary_TrainSet.png', dpi=my_dpi*10, bbox_inches='tight');
 
-        plt.rcParams.update({'font.size': 25})
-        fig = plt.figure(figsize=(20,20))
-        shap.force_plot(shap_explainer.expected_value, shap_values_train[0,:], train_features.iloc[0,:], matplotlib=True, show=False, figsize=(20, 10))#, unsafe_allow_html=True)
+        plt.rcParams.update({'font.size': 15})
+        fig = plt.figure(figsize=(10,10))
+        shap.force_plot(shap_explainer.expected_value, shap_values_train[0,:], train_features.iloc[0,:], 
+                        matplotlib=True, show=False, figsize=(20,10))
         plt.title('Train Set: SHAP Force Plot', y=1.75, fontsize=35)
-        plt.tick_params(labelsize=25)
+        plt.tick_params(axis='x',labelsize=15)
         plt.tight_layout()
         plt.savefig('./results/Cat_ShapForce_TrainSet.png', dpi=my_dpi*10, bbox_inches='tight');
 
         # Test set
         shap_values_test = shap_explainer.shap_values(test_features, test_label, check_additivity=False)
     
-        sv_filename = './model/Cat_shap_values_test.pkl'
-        joblib.dump(shap_values_test, filename=sv_filename, compress=('bz2', 9))
+        shap_val_filename = './model/Cat_shap_values_test.pkl'
+        joblib.dump(shap_values_test, filename=shap_val_filename, compress=('bz2', 9))
         
-        #shap_val_filename = './model/Cat_Shap_values_test.pkl'
+        #shap_val_filename = './model/Cat_shap_values_test.pkl'
         #shap_values_test = joblib.load(filename=shap_val_filename)
 
-        plt.rcParams.update({'font.size': 5})
-        fig = plt.figure(figsize=(5,10))
-        shap.summary_plot(shap_values_test, test_features, show=False)
-        plt.title('Test Set: SHAP Summary Plot', y=1.1, fontsize=14)
+        plt.rcParams.update({'font.size': 1})
+        fig = plt.figure(figsize=(1,1))
+        shap.summary_plot(shap_values_test, test_features, plot_size=[6,6], show=False)
+        plt.title('Test Set: SHAP Summary Plot', y=1.3, fontsize=10)
         plt.tight_layout()
         plt.savefig('./results/Cat_ShapSummary_TestSet.png', dpi=my_dpi*10, bbox_inches='tight');
 
-        plt.rcParams.update({'font.size': 25})
-        fig = plt.figure(figsize=(20,20))
-        shap.force_plot(shap_explainer.expected_value, shap_values_test[0,:], test_features.iloc[0,:], matplotlib=True, show=False, figsize=(20, 10))
+        plt.rcParams.update({'font.size': 15})
+        fig = plt.figure(figsize=(10,10))
+        shap.force_plot(shap_explainer.expected_value, shap_values_test[0,:], test_features.iloc[0,:], 
+                        matplotlib=True, show=False, figsize=(20,10))
         plt.title('Test Set: SHAP Force Plot', y=1.75, fontsize=35)
-        plt.tick_params(labelsize=25)
+        plt.tick_params(axis='x',labelsize=15)
         plt.tight_layout()
         plt.savefig('./results/Cat_ShapForce_TestSet.png', dpi=my_dpi*10, bbox_inches='tight');
         

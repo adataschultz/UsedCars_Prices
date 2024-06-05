@@ -8,7 +8,8 @@ import warnings
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-from plotly.offline import iplot
+#from plotly.offline import iplot
+#import plotly.io as pio
 import streamlit.components.v1 as components
 import dill as pickle
 import lightgbm
@@ -21,7 +22,13 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import matplotlib.pyplot as plt
 import seaborn as sns
 import shap
+#import requests
+#from requests import ConnectionError
+#import json
+#import io
+#from io import StringIO, BytesIO
 warnings.filterwarnings('ignore')
+#pio.templates.default = 'plotly'
 
 seed_value = 42
 os.environ['usedCars_GPU'] = str(seed_value)
@@ -29,9 +36,269 @@ random.seed(seed_value)
 np.random.seed(seed_value)
 
 # Set path
+#path = '/mnt/UsedCars_Prices/Deploy/app_usedCars/frontend'
 path = '/mount/src/usedcars_prices/Deploy/app_usedCars/frontend'
 os.chdir(path)
 
+st.markdown("<h1 style='text-align: center; color: black;'>Predicting the Price of Used Vehicles from CarGurus</h1>", unsafe_allow_html=True)
+
+# Set number of columns
+col1, col2 , col3 = st.columns(3)
+
+# Price State: train/test
+path_to_html = path + '/static/traintest_priceState.html'
+
+@st.cache_resource(show_spinner=False)
+def plot_traintest_monthPriceState(path_to_html):
+    
+    with open(path_to_html,'r') as f: 
+        traintest_priceState = f.read()
+    with col2:
+        st.components.v1.html(traintest_priceState, height=500, width=700)
+    return path_to_html
+
+plot_traintest_monthPriceState(path_to_html)
+
+# Year State: Train
+col1, col2  = st.columns(2, gap='small')
+
+path_to_html = path + '/static/train_yearState.html'
+
+@st.cache_resource(show_spinner=False)
+def plot_train_yearState(path_to_html):
+    
+    with open(path_to_html,'r') as f: 
+        train_yearState = f.read()
+    with col1:
+        st.components.v1.html(train_yearState, height=500, width=700)
+    return path_to_html
+
+plot_train_yearState(path_to_html)
+
+# Year State: Test
+path_to_html = path + '/static/test_yearState.html'
+
+@st.cache_resource(show_spinner=False)
+def plot_test_yearState(path_to_html):
+    
+    with open(path_to_html,'r') as f: 
+        test_yearState = f.read()
+    with col2:
+        st.components.v1.html(test_yearState, height=500, width=700)
+    return path_to_html
+
+plot_test_yearState(path_to_html)
+
+# Month Price State: Train
+col1, col2  = st.columns(2, gap='small')
+
+path_to_html = path + '/static/train_monthPriceState.html'
+
+@st.cache_resource(show_spinner=False)
+def plot_train_monthPriceState(path_to_html):
+    
+    with open(path_to_html,'r') as f: 
+        train_monthPriceState = f.read()
+    with col1:
+        st.components.v1.html(train_monthPriceState, height=500, width=700)
+    return path_to_html
+
+plot_train_monthPriceState(path_to_html)
+
+# Month Price State: Test
+path_to_html = path + '/static/test_monthPriceState.html'
+
+@st.cache_resource(show_spinner=False)
+def plot_test_monthPriceState(path_to_html):
+    
+    with open(path_to_html,'r') as f: 
+        test_monthPriceState = f.read()
+    with col2:
+        st.components.v1.html(test_monthPriceState, height=500, width=700)
+    return path_to_html
+
+plot_test_monthPriceState(path_to_html)
+
+# Price Color: Train
+col1, col2  = st.columns(2, gap='small')
+
+path_to_html = path + '/static/train_priceColor.html'
+
+@st.cache_resource(show_spinner=False)
+def plot_train_priceColor(path_to_html):
+    
+    with open(path_to_html,'r') as f: 
+        train_priceColor = f.read()
+    with col1:
+        st.components.v1.html(train_priceColor, height=500, width=700)
+    return path_to_html
+
+plot_train_priceColor(path_to_html)
+
+# Price Color: Test
+path_to_html = path + '/static/test_priceColor.html'
+
+@st.cache_resource(show_spinner=False)
+def plot_test_priceColor(path_to_html):
+    
+    with open(path_to_html,'r') as f: 
+        test_priceColor = f.read()
+    with col2:
+        st.components.v1.html(test_priceColor, height=500, width=700)
+    return path_to_html
+
+plot_test_priceColor(path_to_html)
+
+# Price Color State: Train
+col1, col2  = st.columns(2, gap='small')
+
+path_to_html = path + '/static/train_priceColorState.html'
+
+@st.cache_resource(show_spinner=False)
+def plot_train_PriceColorState(path_to_html):
+    
+    with open(path_to_html,'r') as f: 
+        train_PriceColorState = f.read()
+    with col1:
+        st.components.v1.html(train_PriceColorState, height=500, width=700)
+    return path_to_html
+
+plot_train_PriceColorState(path_to_html)
+
+# Price Color State: Test
+path_to_html = path + '/static/test_priceColorState.html'
+
+@st.cache_resource(show_spinner=False)
+def plot_test_PriceColorState(path_to_html):
+    
+    with open(path_to_html,'r') as f: 
+        test_PriceColorState = f.read()
+    with col2:
+        st.components.v1.html(test_PriceColorState, height=500, width=700)
+    return path_to_html
+
+plot_test_PriceColorState(path_to_html)
+
+# Days on Market Color State: Train
+col1, col2  = st.columns(2, gap='small')
+
+path_to_html = path + '/static/train_domColorState.html'
+
+@st.cache_resource(show_spinner=False)
+def plot_train_domColorState(path_to_html):
+    
+    with open(path_to_html,'r') as f: 
+        train_domColorState = f.read()
+    with col1:
+        st.components.v1.html(train_domColorState, height=500, width=700)
+    return path_to_html
+
+plot_train_domColorState(path_to_html)
+
+# Days on Market Color State: Test
+path_to_html = path + '/static/test_domColorState.html'
+
+@st.cache_resource(show_spinner=False)
+def plot_test_domColorState(path_to_html):
+    
+    with open(path_to_html,'r') as f: 
+        test_domColorState = f.read()
+    with col2:
+        st.components.v1.html(test_domColorState, height=500, width=700)
+    return path_to_html
+
+plot_test_domColorState(path_to_html)
+
+###################################################################################################################
+###################################################################################################################
+st.subheader('Data Monitoring', divider='blue')
+
+# Data Quality
+path_to_html_quality = path + '/static/DataQualityPreset_report.html' 
+
+path_to_html_presets = path + '/static/data_qualityTestPresets_report.html' 
+
+col1, col2 = st.columns(2)
+
+@st.cache_resource(show_spinner=False)
+def plot_dataQuality(path_to_html_quality): 
+    with open(path_to_html_quality,'r') as f: 
+        data_quality = f.read()
+
+    with col1:
+        st.subheader('Data Quality')
+        st.components.v1.html(data_quality, scrolling=True, height=900, width=900)
+    return data_quality
+
+plot_dataQuality(path_to_html_quality)
+
+@st.cache_resource(show_spinner=False)
+def plot_dataQualityPresets(path_to_html_presets):
+    
+    with open(path_to_html_presets,'r') as f: 
+        data_quality_presets = f.read()
+
+    with col2:
+        st.components.v1.html(data_quality_presets, scrolling=True, height=900, width=900)
+    return data_quality_presets
+
+plot_dataQualityPresets(path_to_html_presets)
+
+###################################################################################################################
+# Data Integrity and Stability
+path_to_html_integrity = path + '/static/data_integrity_dataset_report_SummaryMissing.html' 
+
+path_to_html_stability = path + '/static/data_stabilityTestPresets_report.html'
+
+col1, col2 = st.columns(2)
+
+@st.cache_resource(show_spinner=False)
+def plot_dataIntegrity(path_to_html_integrity):
+    
+    with open(path_to_html_integrity,'r') as f: 
+        data_integrity = f.read()
+
+    with col1:
+        st.subheader('Data Integrity')
+        st.components.v1.html(data_integrity, scrolling=True, height=900, width=900)
+    
+    return data_integrity
+    
+plot_dataIntegrity(path_to_html_integrity)
+
+@st.cache_resource(show_spinner=False)
+def plot_dataStabilty(path_to_html_stability):
+    
+    with open(path_to_html_stability,'r') as f: 
+        data_stability = f.read()
+    with col2:
+        st.subheader('Data Stability')
+        st.components.v1.html(data_stability, scrolling=True, height=900, width=900)
+    
+    return data_stability
+
+plot_dataStabilty(path_to_html_stability)
+
+###################################################################################################################
+# Data Drift
+path_to_html_drift = path + '/static/data_drift_report.html'
+
+col1, col2 , col3 = st.columns(3)
+
+@st.cache_resource(show_spinner=False)
+def plot_dataDrift(path_to_html_drift):
+
+    with open(path_to_html_drift,'r') as f: 
+        data_drift = f.read()
+    with col2:
+        st.subheader('Data Drift')
+        st.components.v1.html(data_drift, scrolling=True, height=900, width=900) 
+    return data_drift
+
+data_drift = plot_dataDrift(path_to_html_drift)  
+
+###################################################################################################################
+###################################################################################################################
 # Load data
 @st.cache_data
 def load_data():
@@ -42,139 +309,6 @@ def load_data():
     except Exception as ex:
         raise(f'Error in loading file: {ex}', str(ex))
         
-st.title('Pricing of Used Cars')
-
-trainDF, testDF = load_data()
-
-col1, col2 , col3 = st.columns(3)
-
-with col2:    
-# dict for the dataframes and their names
-    dfs = {'Training Set' : trainDF, 'Test Set': testDF}
-
-# plot the data
-    fig = go.Figure()
-
-    for i in dfs:
-        fig = fig.add_trace(go.Box(x=dfs[i]['State'],
-                                   y=dfs[i]['price'], 
-                                   name=i))
-        fig.update_layout(title='Train/Test Sets: Price of Vehicles in Different States')
-    st.plotly_chart(fig)
-    
-col1, col2 , col3 = st.columns(3)
-
-with col1:
-    fig = px.pie(trainDF, values='year', names='State', title='Train Set: Vehicles Listed Per Year Per State')
-    st.plotly_chart(fig)
-    
-with col2:
-    fig = px.pie(testDF, values='year', names='State', title='Test Set: Vehicles Listed Per Year Per State')
-    st.plotly_chart(fig)
-
-col1, col2 , col3 = st.columns(3)
-
-with col1:    
-    fig = px.bar(trainDF, x='listed_date_yearMonth', y='price', color='State', labels={'y':'price'},
-                 hover_data=['State'], title='Train Set: Total Price of Used Cars Per Month Per State')
-    st.plotly_chart(fig)
-
-with col2:    
-    fig = px.bar(testDF, x='listed_date_yearMonth', y='price', color='State', labels={'y':'price'},
-                 hover_data=['State'], title='Test Set: Total Price of Used Cars Per Month Per State')
-    st.plotly_chart(fig)
-
-col1, col2 , col3 = st.columns(3)
-
-with col1:
-    fig = px.box(trainDF, x='listing_color', y='price', points='all', title='Train Set: Price of Different Colored Vehicles')
-    st.plotly_chart(fig)
-
-with col2:
-    fig = px.box(testDF, x='listing_color', y='price', points='all', title='Test Set: Price of Different Colored Vehicles')
-    st.plotly_chart(fig)
-
-col1, col2 , col3 = st.columns(3)
-
-with col1:
-    fig = px.bar(trainDF, x='State', y='price', color='listing_color', title='Train Set: Total Price of Different Colored Vehicles Per State')
-    st.plotly_chart(fig)
-
-with col2:
-    fig = px.bar(testDF, x='State', y='price', color='listing_color', title='Test Set: Price of Different Colored Vehicles Per State')
-    st.plotly_chart(fig)
-
-col1, col2 , col3 = st.columns(3)
-
-with col1:
-    fig = px.bar(trainDF, x='State', y='daysonmarket', color='listing_color', title='Train Set: Number of Days on Market of Different Colored Vehicles Per State')
-    st.plotly_chart(fig)
-
-with col2:
-    fig = px.bar(testDF, x='State', y='daysonmarket', color='listing_color', title='Test Set: Number of Days on Market of Different Colored Vehicles Per State')
-    st.plotly_chart(fig)
-
-###################################################################################################################
-###################################################################################################################
-st.subheader('Data Monitoring', divider='blue')
-
-path_to_html = path + '/static/DataQualityPreset_report.html' 
-
-with open(path_to_html,'r') as f: 
-    data_quality = f.read()
-
-###################################################################################################################
-path_to_html = path + '/static/data_qualityTestPresets_report.html' 
-
-with open(path_to_html,'r') as f: 
-    data_quality_presets = f.read()
-    
-col1, col2 = st.columns(2)
-
-with col1:
-   st.subheader('Data Quality')
-   st.components.v1.html(data_quality, scrolling=True, height=1000, width=1000)
-
-with col2:
-   st.components.v1.html(data_quality_presets, scrolling=True, height=1000, width=1000)
-                         
-###################################################################################################################
-path_to_html = path + '/static/data_integrity_dataset_report_SummaryMissing.html' 
-
-with open(path_to_html,'r') as f: 
-    data_integrity = f.read()
-                       
-###################################################################################################################
-path_to_html = path + '/static/data_stabilityTestPresets_report.html'
-
-with open(path_to_html,'r') as f: 
-    data_stability = f.read()
-
-col1, col2 = st.columns(2)
-
-with col1:
-   st.subheader('Data Integrity')
-   st.components.v1.html(data_integrity, scrolling=True, height=1000, width=1000)
-
-with col2:
-   st.subheader('Data Stability')
-   st.components.v1.html(data_stability, scrolling=True, height=1000, width=1000)
-                         
-###################################################################################################################
-path_to_html = path + '/static/data_drift_report.html'
-
-with open(path_to_html,'r') as f: 
-    data_drift = f.read()
-
-col1, col2 , col3 = st.columns(3)
-
-with col2:
-    st.subheader('Data Drift')
-    # Show in webpage
-    st.components.v1.html(data_drift, scrolling=True, height=1000, width=1000)
-                         
-###################################################################################################################
-###################################################################################################################
 # Load models
 os.environ['LGB_MODEL_DIR'] = path + '/lightgbm/model/usedcars_lgbm_model.pkl'
 os.environ['CAT_MODEL_DIR'] = path + '/catboost/model/usedcars_cat_model'
@@ -199,6 +333,9 @@ def load_xgb_model():
     model = xgb.Booster()
     model.load_model(xgb_path)
     return model
+
+# Load data
+trainDF, testDF = load_data()
 
 train_label = trainDF[['price']]
 test_label = testDF[['price']]
@@ -239,8 +376,6 @@ st.write('R^2 train: %.3f, test: %.3f' % (
         r2_score(train_label, y_train_pred),
         r2_score(test_label, y_test_pred)))    
 
-st.subheader('LightGBM: Feature Importance', divider='blue')
-
 st.image(path + '/lightgbm/results/LGBM_FeatureImportance.png')
 
 # SHAP
@@ -248,19 +383,39 @@ st.subheader('LightGBM: Model-based SHAP', divider='blue')
 
 col1, col2 = st.columns(2)
 
-with col1:
-   st.image(path + '/lightgbm/results/LGBM_ShapSummary_TrainSet.png')
+# Train set
+path_train_summary = path + '/lightgbm/results/LGBM_ShapSummary_TrainSet.png'
 
-with col2:
-   st.image(path + '/lightgbm/results/LGBM_ShapForce_TrainSet.png')
+path_train_force = path + '/lightgbm/results/LGBM_ShapForce_TrainSet.png'
 
+@st.cache_resource(show_spinner=False)
+def plot_lgb_train_shap(path_train_summary, path_train_force):
+
+    with col1:
+        summary = st.image(path_train_summary)
+    with col2:
+        force = st.image(path_train_force)
+    return summary, force
+
+plot_lgb_train_shap(path_train_summary, path_train_force)  
+
+# Test set
 col1, col2 = st.columns(2)
 
-with col1:
-   st.image(path + '/lightgbm/results/LGBM_ShapSummary_TestSet.png')
+path_test_summary = path + '/lightgbm/results/LGBM_ShapSummary_TestSet.png'
 
-with col2:
-   st.image(path + '/lightgbm/results/LGBM_ShapForce_TestSet.png')
+path_test_force = path + '/lightgbm/results/LGBM_ShapForce_TestSet.png'
+
+@st.cache_resource(show_spinner=False)
+def plot_lgb_test_shap(path_test_summary, path_test_force):
+
+    with col1:
+        summary = st.image(path_test_summary)
+    with col2:
+        force = st.image(path_test_force)
+    return summary, force
+
+plot_lgb_test_shap(path_test_summary, path_test_force)
 
 ###################################################################################################################
 st.subheader('Models Metrics for Used Vehicle Price Prediction Using Catboost', divider='blue')
@@ -290,19 +445,39 @@ st.subheader('Catboost: Model-based SHAP', divider='blue')
 
 col1, col2 = st.columns(2)
 
-with col1:
-   st.image(path + '/catboost/results/Cat_ShapSummary_TrainSet.png')
+# Train set
+path_train_summary = path + '/catboost/results/Cat_ShapSummary_TrainSet.png'
 
-with col2:
-   st.image(path + '/catboost/results/Cat_ShapForce_TrainSet.png')
+path_train_force = path + '/catboost/results/Cat_ShapForce_TrainSet.png'
+
+@st.cache_resource(show_spinner=False)
+def plot_cat_train_shap(path_train_summary, path_train_force):
+
+    with col1:
+        summary = st.image(path_train_summary)
+    with col2:
+        force = st.image(path_train_force)
+    return summary, force
+
+plot_cat_train_shap(path_train_summary, path_train_force)  
 
 col1, col2 = st.columns(2)
 
-with col1:
-   st.image(path + '/catboost/results/Cat_ShapSummary_TestSet.png')
+# Test set
+path_test_summary = path + '/catboost/results/Cat_ShapSummary_TestSet.png'
 
-with col2:
-   st.image(path + '/catboost/results/Cat_ShapForce_TestSet.png')
+path_test_force = path + '/catboost/results/Cat_ShapForce_TestSet.png'
+
+@st.cache_resource(show_spinner=False)
+def plot_cat_test_shap(path_test_summary, path_test_force):
+
+    with col1:
+        summary = st.image(path_test_summary)
+    with col2:
+        force = st.image(path_test_force)
+    return summary, force
+
+plot_cat_test_shap(path_test_summary, path_test_force)  
 
 ###################################################################################################################
 st.subheader('Models Metrics for Used Vehicle Price Prediction Using XGBoost', divider='blue')
@@ -332,20 +507,40 @@ st.subheader('XGBoost: Model-based SHAP', divider='blue')
 
 col1, col2 = st.columns(2)
 
-with col1:
-   st.image(path + '/xgboost/results/XGB_ShapSummary_TrainSet.png')
+# Train set
+path_train_summary = path + '/xgboost/results/XGB_ShapSummary_TrainSet.png'
 
-with col2:
-   st.image(path + '/xgboost/results/XGB_ShapForce_TrainSet.png')
+path_train_force = path + '/xgboost/results/XGB_ShapForce_TrainSet.png'
+
+@st.cache_resource(show_spinner=False)
+def plot_xgb_train_shap(path_train_summary, path_train_force):
+
+    with col1:
+        summary = st.image(path_train_summary)
+    with col2:
+        force = st.image(path_train_force)
+    return summary, force
+
+plot_xgb_train_shap(path_train_summary, path_train_force)  
 
 col1, col2 = st.columns(2)
 
-with col1:
-   st.image(path + '/xgboost/results/XGB_ShapSummary_TestSet.png')
+# Test set
+path_test_summary = path + '/xgboost/results/XGB_ShapSummary_TestSet.png'
 
-with col2:
-   st.image(path + '/xgboost/results/XGB_ShapForce_TestSet.png')
-            
+path_test_force = path + '/xgboost/results/XGB_ShapForce_TestSet.png'
+
+@st.cache_resource(show_spinner=False)
+def plot_xgb_test_shap(path_test_summary, path_test_force):
+
+    with col1:
+        summary = st.image(path_test_summary)
+    with col2:
+        force = st.image(path_test_force)
+    return summary, force
+
+plot_xgb_test_shap(path_test_summary, path_test_force)  
+
 ###################################################################################################################
 link = 'Made by [Andrew Schultz](https://github.com/adataschultz/)'
 st.markdown(link, unsafe_allow_html=True)

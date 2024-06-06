@@ -8,8 +8,6 @@ import warnings
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-#from plotly.offline import iplot
-#import plotly.io as pio
 import streamlit.components.v1 as components
 import dill as pickle
 import lightgbm
@@ -22,13 +20,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import matplotlib.pyplot as plt
 import seaborn as sns
 import shap
-#import requests
-#from requests import ConnectionError
-#import json
-#import io
-#from io import StringIO, BytesIO
 warnings.filterwarnings('ignore')
-#pio.templates.default = 'plotly'
 
 seed_value = 42
 os.environ['usedCars_GPU'] = str(seed_value)
@@ -48,7 +40,6 @@ col1, col2 , col3 = st.columns(3)
 # Price State: train/test
 path_to_html = path + '/static/traintest_priceState.html'
 
-@st.cache_resource(show_spinner=False)
 def plot_traintest_monthPriceState(path_to_html):
     
     with open(path_to_html,'r') as f: 
@@ -64,7 +55,6 @@ col1, col2  = st.columns(2, gap='small')
 
 path_to_html = path + '/static/train_yearState.html'
 
-@st.cache_resource(show_spinner=False)
 def plot_train_yearState(path_to_html):
     
     with open(path_to_html,'r') as f: 
@@ -78,7 +68,6 @@ plot_train_yearState(path_to_html)
 # Year State: Test
 path_to_html = path + '/static/test_yearState.html'
 
-@st.cache_resource(show_spinner=False)
 def plot_test_yearState(path_to_html):
     
     with open(path_to_html,'r') as f: 
@@ -94,7 +83,6 @@ col1, col2  = st.columns(2, gap='small')
 
 path_to_html = path + '/static/train_monthPriceState.html'
 
-@st.cache_resource(show_spinner=False)
 def plot_train_monthPriceState(path_to_html):
     
     with open(path_to_html,'r') as f: 
@@ -108,7 +96,6 @@ plot_train_monthPriceState(path_to_html)
 # Month Price State: Test
 path_to_html = path + '/static/test_monthPriceState.html'
 
-@st.cache_resource(show_spinner=False)
 def plot_test_monthPriceState(path_to_html):
     
     with open(path_to_html,'r') as f: 
@@ -124,7 +111,6 @@ col1, col2  = st.columns(2, gap='small')
 
 path_to_html = path + '/static/train_priceColor.html'
 
-@st.cache_resource(show_spinner=False)
 def plot_train_priceColor(path_to_html):
     
     with open(path_to_html,'r') as f: 
@@ -138,7 +124,6 @@ plot_train_priceColor(path_to_html)
 # Price Color: Test
 path_to_html = path + '/static/test_priceColor.html'
 
-@st.cache_resource(show_spinner=False)
 def plot_test_priceColor(path_to_html):
     
     with open(path_to_html,'r') as f: 
@@ -154,7 +139,6 @@ col1, col2  = st.columns(2, gap='small')
 
 path_to_html = path + '/static/train_priceColorState.html'
 
-@st.cache_resource(show_spinner=False)
 def plot_train_PriceColorState(path_to_html):
     
     with open(path_to_html,'r') as f: 
@@ -168,7 +152,6 @@ plot_train_PriceColorState(path_to_html)
 # Price Color State: Test
 path_to_html = path + '/static/test_priceColorState.html'
 
-@st.cache_resource(show_spinner=False)
 def plot_test_PriceColorState(path_to_html):
     
     with open(path_to_html,'r') as f: 
@@ -184,7 +167,6 @@ col1, col2  = st.columns(2, gap='small')
 
 path_to_html = path + '/static/train_domColorState.html'
 
-@st.cache_resource(show_spinner=False)
 def plot_train_domColorState(path_to_html):
     
     with open(path_to_html,'r') as f: 
@@ -198,7 +180,6 @@ plot_train_domColorState(path_to_html)
 # Days on Market Color State: Test
 path_to_html = path + '/static/test_domColorState.html'
 
-@st.cache_resource(show_spinner=False)
 def plot_test_domColorState(path_to_html):
     
     with open(path_to_html,'r') as f: 
@@ -220,7 +201,6 @@ path_to_html_presets = path + '/static/data_qualityTestPresets_report.html'
 
 col1, col2 = st.columns(2)
 
-@st.cache_resource(show_spinner=False)
 def plot_dataQuality(path_to_html_quality): 
     with open(path_to_html_quality,'r') as f: 
         data_quality = f.read()
@@ -232,7 +212,6 @@ def plot_dataQuality(path_to_html_quality):
 
 plot_dataQuality(path_to_html_quality)
 
-@st.cache_resource(show_spinner=False)
 def plot_dataQualityPresets(path_to_html_presets):
     
     with open(path_to_html_presets,'r') as f: 
@@ -252,7 +231,6 @@ path_to_html_stability = path + '/static/data_stabilityTestPresets_report.html'
 
 col1, col2 = st.columns(2)
 
-@st.cache_resource(show_spinner=False)
 def plot_dataIntegrity(path_to_html_integrity):
     
     with open(path_to_html_integrity,'r') as f: 
@@ -266,7 +244,6 @@ def plot_dataIntegrity(path_to_html_integrity):
     
 plot_dataIntegrity(path_to_html_integrity)
 
-@st.cache_resource(show_spinner=False)
 def plot_dataStabilty(path_to_html_stability):
     
     with open(path_to_html_stability,'r') as f: 
@@ -285,7 +262,6 @@ path_to_html_drift = path + '/static/data_drift_report.html'
 
 col1, col2 , col3 = st.columns(3)
 
-@st.cache_resource(show_spinner=False)
 def plot_dataDrift(path_to_html_drift):
 
     with open(path_to_html_drift,'r') as f: 
@@ -388,7 +364,6 @@ path_train_summary = path + '/lightgbm/results/LGBM_ShapSummary_TrainSet.png'
 
 path_train_force = path + '/lightgbm/results/LGBM_ShapForce_TrainSet.png'
 
-@st.cache_resource(show_spinner=False)
 def plot_lgb_train_shap(path_train_summary, path_train_force):
 
     with col1:
@@ -406,7 +381,6 @@ path_test_summary = path + '/lightgbm/results/LGBM_ShapSummary_TestSet.png'
 
 path_test_force = path + '/lightgbm/results/LGBM_ShapForce_TestSet.png'
 
-@st.cache_resource(show_spinner=False)
 def plot_lgb_test_shap(path_test_summary, path_test_force):
 
     with col1:
@@ -450,7 +424,6 @@ path_train_summary = path + '/catboost/results/Cat_ShapSummary_TrainSet.png'
 
 path_train_force = path + '/catboost/results/Cat_ShapForce_TrainSet.png'
 
-@st.cache_resource(show_spinner=False)
 def plot_cat_train_shap(path_train_summary, path_train_force):
 
     with col1:
@@ -468,7 +441,6 @@ path_test_summary = path + '/catboost/results/Cat_ShapSummary_TestSet.png'
 
 path_test_force = path + '/catboost/results/Cat_ShapForce_TestSet.png'
 
-@st.cache_resource(show_spinner=False)
 def plot_cat_test_shap(path_test_summary, path_test_force):
 
     with col1:
@@ -512,7 +484,6 @@ path_train_summary = path + '/xgboost/results/XGB_ShapSummary_TrainSet.png'
 
 path_train_force = path + '/xgboost/results/XGB_ShapForce_TrainSet.png'
 
-@st.cache_resource(show_spinner=False)
 def plot_xgb_train_shap(path_train_summary, path_train_force):
 
     with col1:
@@ -530,7 +501,6 @@ path_test_summary = path + '/xgboost/results/XGB_ShapSummary_TestSet.png'
 
 path_test_force = path + '/xgboost/results/XGB_ShapForce_TestSet.png'
 
-@st.cache_resource(show_spinner=False)
 def plot_xgb_test_shap(path_test_summary, path_test_force):
 
     with col1:

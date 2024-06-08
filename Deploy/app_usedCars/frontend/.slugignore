@@ -1,0 +1,13 @@
+# To ignore
+/tmp
+/xgboost/mlruns
+/xgboost/model/*.pkl
+/xgboost/mlruns/0/5fd3dfacad3c4eb1b7e6a72789776923/artifacts
+/catboost/mlruns
+/catboost/model/*.pkl
+/lightgbm/mlruns
+/lightgbm/model/LGBM_ShapExplainer.pkl  
+/lightgbm/model/LGBM_shap_values_test.pkl  
+/lightgbm/model/LGBM_shap_values_train.pkl
+
+

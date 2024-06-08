@@ -7,19 +7,19 @@ import numpy as np
 import warnings
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
+#import plotly.graph_objects as go
 import streamlit.components.v1 as components
-import dill as pickle
-import lightgbm
-from lightgbm import LGBMRegressor
-from catboost import CatBoostRegressor
-import xgboost as xgb
-from xgboost import XGBRegressor, plot_importance
-import joblib
-from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-import matplotlib.pyplot as plt
-import seaborn as sns
-import shap
+# import dill as pickle
+# import lightgbm
+# from lightgbm import LGBMRegressor
+# from catboost import CatBoostRegressor
+# import xgboost as xgb
+# from xgboost import XGBRegressor, plot_importance
+# import joblib
+# from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+# import matplotlib.pyplot as plt
+# import seaborn as sns
+# import shap
 warnings.filterwarnings('ignore')
 
 seed_value = 42
@@ -275,82 +275,84 @@ data_drift = plot_dataDrift(path_to_html_drift)
 
 ###################################################################################################################
 ###################################################################################################################
-# Load data
-@st.cache_data
-def load_data():
-    try:
-        train_data = pd.read_parquet(path + '/data/usedCars_trainSet.parquet.gzip')
-        test_data = pd.read_parquet(path + '/data/usedCars_testSet.parquet.gzip')
-        return train_data, test_data
-    except Exception as ex:
-        raise(f'Error in loading file: {ex}', str(ex))
+# # Load data
+# @st.cache_data
+# def load_data():
+#     try:
+#         train_data = pd.read_parquet(path + '/data/usedCars_trainSet.parquet.gzip')
+#         test_data = pd.read_parquet(path + '/data/usedCars_testSet.parquet.gzip')
+#         return train_data, test_data
+#     except Exception as ex:
+#         raise(f'Error in loading file: {ex}', str(ex))
         
-# Load models
-os.environ['LGB_MODEL_DIR'] = path + '/lightgbm/model/usedcars_lgbm_model.pkl'
-os.environ['CAT_MODEL_DIR'] = path + '/catboost/model/usedcars_cat_model'
-os.environ['XGB_MODEL_DIR'] = path + '/xgboost/model/usedcars_xgb_model.bin'
+# # Load models
+# os.environ['LGB_MODEL_DIR'] = path + '/lightgbm/model/usedcars_lgbm_model.pkl'
+# os.environ['CAT_MODEL_DIR'] = path + '/catboost/model/usedcars_cat_model'
+# os.environ['XGB_MODEL_DIR'] = path + '/xgboost/model/usedcars_xgb_model.bin'
 
-@st.cache_resource
-def load_lgb_model():
-    lgb_path = os.environ['LGB_MODEL_DIR']
-    model = joblib.load(open(lgb_path,'rb'))
-    return model
+# @st.cache_resource
+# def load_lgb_model():
+#     lgb_path = os.environ['LGB_MODEL_DIR']
+#     model = joblib.load(open(lgb_path,'rb'))
+#     return model
 
-@st.cache_resource
-def load_cat_model():
-    cat_path = os.environ['CAT_MODEL_DIR']
-    model = CatBoostRegressor()
-    model.load_model(cat_path)
-    return model
+# @st.cache_resource
+# def load_cat_model():
+#     cat_path = os.environ['CAT_MODEL_DIR']
+#     model = CatBoostRegressor()
+#     model.load_model(cat_path)
+#     return model
 
-@st.cache_resource
-def load_xgb_model():
-    xgb_path = os.environ['XGB_MODEL_DIR']
-    model = xgb.Booster()
-    model.load_model(xgb_path)
-    return model
+# @st.cache_resource
+# def load_xgb_model():
+#     xgb_path = os.environ['XGB_MODEL_DIR']
+#     model = xgb.Booster()
+#     model.load_model(xgb_path)
+#     return model
 
-# Load data
-trainDF, testDF = load_data()
+# # Load data
+# trainDF, testDF = load_data()
 
-train_label = trainDF[['price']]
-test_label = testDF[['price']]
+# train_label = trainDF[['price']]
+# test_label = testDF[['price']]
 
-train_features = trainDF.drop(columns = ['price'])
-test_features = testDF.drop(columns = ['price'])
+# train_features = trainDF.drop(columns = ['price'])
+# test_features = testDF.drop(columns = ['price'])
 
-train_Features = pd.get_dummies(train_features, drop_first=True)
-test_Features = pd.get_dummies(test_features, drop_first=True)
+# train_Features = pd.get_dummies(train_features, drop_first=True)
+# test_Features = pd.get_dummies(test_features, drop_first=True)
     
-categorical_features_indices = ['body_type', 'fuel_type', 'listing_color',
-                                'transmission', 'wheel_system_display', 'State',
-                                'listed_date_yearMonth', 'is_new']
+# categorical_features_indices = ['body_type', 'fuel_type', 'listing_color',
+#                                 'transmission', 'wheel_system_display', 'State',
+#                                 'listed_date_yearMonth', 'is_new']
 
-dtrain = xgb.DMatrix(train_Features, label=train_label)
-dtest = xgb.DMatrix(test_Features, label=test_label)
+# dtrain = xgb.DMatrix(train_Features, label=train_label)
+# dtest = xgb.DMatrix(test_Features, label=test_label)
 
-model_lgb = load_lgb_model()
-model_cat = load_cat_model()
-model_xgb = load_xgb_model()
+# model_lgb = load_lgb_model()
+# model_cat = load_cat_model()
+# model_xgb = load_xgb_model()
 
 ###################################################################################################################
-st.subheader('Models Metrics for Used Vehicle Price Prediction Using LightGBM', divider='blue')
+# st.subheader('Models Metrics for Used Vehicle Price Prediction Using LightGBM', divider='blue')
 
-y_train_pred = model_lgb.predict(train_Features)
-y_test_pred = model_lgb.predict(test_Features)
+# y_train_pred = model_lgb.predict(train_Features)
+# y_test_pred = model_lgb.predict(test_Features)
 
-st.write('MAE train: %.3f, test: %.3f' % (
-        mean_absolute_error(train_label, y_train_pred),
-        mean_absolute_error(test_label, y_test_pred)))
-st.write('MSE train: %.3f, test: %.3f' % (
-        mean_squared_error(train_label, y_train_pred),
-        mean_squared_error(test_label, y_test_pred)))
-st.write('RMSE train: %.3f, test: %.3f' % (
-        mean_squared_error(train_label, y_train_pred, squared=False),
-        mean_squared_error(test_label, y_test_pred, squared=False)))
-st.write('R^2 train: %.3f, test: %.3f' % (
-        r2_score(train_label, y_train_pred),
-        r2_score(test_label, y_test_pred)))    
+# st.write('MAE train: %.3f, test: %.3f' % (
+#         mean_absolute_error(train_label, y_train_pred),
+#         mean_absolute_error(test_label, y_test_pred)))
+# st.write('MSE train: %.3f, test: %.3f' % (
+#         mean_squared_error(train_label, y_train_pred),
+#         mean_squared_error(test_label, y_test_pred)))
+# st.write('RMSE train: %.3f, test: %.3f' % (
+#         mean_squared_error(train_label, y_train_pred, squared=False),
+#         mean_squared_error(test_label, y_test_pred, squared=False)))
+# st.write('R^2 train: %.3f, test: %.3f' % (
+#         r2_score(train_label, y_train_pred),
+#         r2_score(test_label, y_test_pred)))    
+
+st.subheader('LightGBM: Feature Importance', divider='blue')
 
 st.image(path + '/lightgbm/results/LGBM_FeatureImportance.png')
 
@@ -392,23 +394,23 @@ def plot_lgb_test_shap(path_test_summary, path_test_force):
 plot_lgb_test_shap(path_test_summary, path_test_force)
 
 ###################################################################################################################
-st.subheader('Models Metrics for Used Vehicle Price Prediction Using Catboost', divider='blue')
+# st.subheader('Models Metrics for Used Vehicle Price Prediction Using Catboost', divider='blue')
 
-y_train_pred = model_cat.predict(train_features)
-y_test_pred = model_cat.predict(test_features)
+# y_train_pred = model_cat.predict(train_features)
+# y_test_pred = model_cat.predict(test_features)
 
-st.write('MAE train: %.3f, test: %.3f' % (
-        mean_absolute_error(train_label, y_train_pred),
-        mean_absolute_error(test_label, y_test_pred)))
-st.write('MSE train: %.3f, test: %.3f' % (
-        mean_squared_error(train_label, y_train_pred),
-        mean_squared_error(test_label, y_test_pred)))
-st.write('RMSE train: %.3f, test: %.3f' % (
-        mean_squared_error(train_label, y_train_pred, squared=False),
-        mean_squared_error(test_label, y_test_pred, squared=False)))
-st.write('R^2 train: %.3f, test: %.3f' % (
-        r2_score(train_label, y_train_pred),
-        r2_score(test_label, y_test_pred)))    
+# st.write('MAE train: %.3f, test: %.3f' % (
+#         mean_absolute_error(train_label, y_train_pred),
+#         mean_absolute_error(test_label, y_test_pred)))
+# st.write('MSE train: %.3f, test: %.3f' % (
+#         mean_squared_error(train_label, y_train_pred),
+#         mean_squared_error(test_label, y_test_pred)))
+# st.write('RMSE train: %.3f, test: %.3f' % (
+#         mean_squared_error(train_label, y_train_pred, squared=False),
+#         mean_squared_error(test_label, y_test_pred, squared=False)))
+# st.write('R^2 train: %.3f, test: %.3f' % (
+#         r2_score(train_label, y_train_pred),
+#         r2_score(test_label, y_test_pred)))    
 
 st.subheader('Catboost: Feature Importance', divider='blue')
 
@@ -452,23 +454,23 @@ def plot_cat_test_shap(path_test_summary, path_test_force):
 plot_cat_test_shap(path_test_summary, path_test_force)  
 
 ###################################################################################################################
-st.subheader('Models Metrics for Used Vehicle Price Prediction Using XGBoost', divider='blue')
+# st.subheader('Models Metrics for Used Vehicle Price Prediction Using XGBoost', divider='blue')
 
-y_train_pred = model_xgb.predict(dtrain)
-y_test_pred = model_xgb.predict(dtest)
+# y_train_pred = model_xgb.predict(dtrain)
+# y_test_pred = model_xgb.predict(dtest)
 
-st.write('MAE train: %.3f, test: %.3f' % (
-        mean_absolute_error(train_label, y_train_pred),
-        mean_absolute_error(test_label, y_test_pred)))
-st.write('MSE train: %.3f, test: %.3f' % (
-        mean_squared_error(train_label, y_train_pred),
-        mean_squared_error(test_label, y_test_pred)))
-st.write('RMSE train: %.3f, test: %.3f' % (
-        mean_squared_error(train_label, y_train_pred, squared=False),
-        mean_squared_error(test_label, y_test_pred, squared=False)))
-st.write('R^2 train: %.3f, test: %.3f' % (
-        r2_score(train_label, y_train_pred),
-        r2_score(test_label, y_test_pred)))    
+# st.write('MAE train: %.3f, test: %.3f' % (
+#         mean_absolute_error(train_label, y_train_pred),
+#         mean_absolute_error(test_label, y_test_pred)))
+# st.write('MSE train: %.3f, test: %.3f' % (
+#         mean_squared_error(train_label, y_train_pred),
+#         mean_squared_error(test_label, y_test_pred)))
+# st.write('RMSE train: %.3f, test: %.3f' % (
+#         mean_squared_error(train_label, y_train_pred, squared=False),
+#         mean_squared_error(test_label, y_test_pred, squared=False)))
+# st.write('R^2 train: %.3f, test: %.3f' % (
+#         r2_score(train_label, y_train_pred),
+#         r2_score(test_label, y_test_pred)))    
 
 st.subheader('XGBoost: Feature Importance', divider='blue')
 

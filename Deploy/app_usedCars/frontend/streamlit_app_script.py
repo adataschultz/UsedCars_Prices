@@ -2,6 +2,8 @@ import streamlit as st
 st.set_page_config(page_title='Predicting the Price of Used Vehicles',
                    layout='wide')
 import os
+import path
+import sys
 import random
 import numpy as np
 import warnings
@@ -38,15 +40,17 @@ np.random.seed(seed_value)
 
 # Set path
 #path = '/mnt/UsedCars_Prices/Deploy/app_usedCars/frontend'
-path = '/mount/src/usedcars_prices/Deploy/app_usedCars/frontend'
-os.chdir(path)
+#path = '/mount/src/usedcars_prices/Deploy/app_usedCars/frontend'
+#os.chdir(path)
+dir = path.Path(__file__).abspath()
+sys.path.append(dir.parent.parent)
         
 # Load data
 @st.cache_data
 def load_data():
     try:
-        train_data = pd.read_parquet(path + '/data/usedCars_trainSet.parquet.gzip')
-        test_data = pd.read_parquet(path + '/data/usedCars_testSet.parquet.gzip')
+        train_data = pd.read_parquet('./data/usedCars_trainSet.parquet.gzip')
+        test_data = pd.read_parquet('./data/usedCars_testSet.parquet.gzip')
         return train_data, test_data
     except Exception as ex:
         raise(f'Error in loading file: {ex}', str(ex))
@@ -70,7 +74,6 @@ testDF.reset_index(drop=True, inplace=True)
 col1, col2 , col3 = st.columns(3)
 
 # Price State: train/test
-@st.cache_resource(show_spinner=False)
 def plot_traintest_priceState(train, test):
     dfs = {'Training Set': trainDF, 'Test Set': testDF}
 
@@ -84,9 +87,9 @@ def plot_traintest_priceState(train, test):
     fig.update_layout(legend_title_font_color='black', legend_title_font_size=18, legend_font_size=18)
     fig.update_xaxes(title='Location (State)', title_font_color='black', titlefont=dict(size=18), tickfont=dict(size=16, color='black'))
     fig.update_yaxes(title='Price (USD)', title_font_color='black', titlefont=dict(size=18), tickfont=dict(size=18, color='black'))
-    f = open(path + '/static/traintest_priceState.html', 'w')
+    f = open('./static/traintest_priceState.html', 'w')
     f.close()
-    with open(path + '/static/traintest_priceState.html', 'a') as f:
+    with open('./static/traintest_priceState.html', 'a') as f:
         f.write(fig.to_html(full_html=True))
     f.close()
     return st.plotly_chart(fig)
@@ -97,7 +100,6 @@ with col2:
 col1, col2  = st.columns(2, gap='small')
 
 # Year State: Train/Test
-@st.cache_resource(show_spinner=False)
 def plot_train_yearState(train):
     fig = px.pie(train, values='year', names='State', color='State', color_discrete_map={'CA': '#EB663B',
                                                                                          'NY': '#1CA71C', 
@@ -112,9 +114,9 @@ def plot_train_yearState(train):
     fig.update_xaxes(title_font_color='black', title_font=dict(size=18), tickfont=dict(size=16, color='black'))
     fig.update_yaxes(title_font_color='black', title_font=dict(size=18), tickfont=dict(size=16, color='black'))
     fig.update_layout(uniformtext_minsize=14, uniformtext_mode='hide')
-    f = open(path + '/static/train_yearState.html', 'w')
+    f = open('./static/train_yearState.html', 'w')
     f.close()
-    with open(path + '/static/train_yearState.html', 'a') as f:
+    with open('./static/train_yearState.html', 'a') as f:
             f.write(fig.to_html(full_html=True))
     f.close()    
     return st.plotly_chart(fig)
@@ -122,7 +124,6 @@ def plot_train_yearState(train):
 with col1:
     plot_train_yearState(trainDF)
     
-@st.cache_resource(show_spinner=False)
 def plot_test_yearState(test):
     fig = px.pie(test, values='year', names='State', color='State', color_discrete_map={'CA': '#EB663B',
                                                                                         'NY': '#1CA71C', 
@@ -137,9 +138,9 @@ def plot_test_yearState(test):
     fig.update_xaxes(title_font_color='black', title_font=dict(size=18), tickfont=dict(size=16, color='black'))
     fig.update_yaxes(title_font_color='black', title_font=dict(size=18), tickfont=dict(size=16, color='black'))
     fig.update_layout(uniformtext_minsize=14, uniformtext_mode='hide')
-    f = open(path + '/static/test_yearState.html', 'w')
+    f = open('./static/test_yearState.html', 'w')
     f.close()
-    with open(path + '/static/test_yearState.html', 'a') as f:
+    with open('./static/test_yearState.html', 'a') as f:
             f.write(fig.to_html(full_html=True))
     f.close()
     return st.plotly_chart(fig)
@@ -150,7 +151,6 @@ with col2:
 col1, col2  = st.columns(2, gap='small')
 
 # Month Price State: Train/Test
-@st.cache_resource(show_spinner=False)
 def plot_train_monthPriceState(train):
     fig = px.bar(trainDF, x='listed_date_yearMonth', y='price', color='State', labels={'y':'price'},
                  hover_data=['State'],
@@ -162,9 +162,9 @@ def plot_train_monthPriceState(train):
     fig.update_yaxes(title='Price (USD)', title_font_color='black', title_font=dict(size=18), tickfont=dict(size=16, color='black'))
     fig.update_layout(uniformtext_minsize=14, uniformtext_mode='hide')
     fig.update_traces(dict(marker_line_width=0))
-    f = open(path + '/static/train_monthPriceState.html', 'w')
+    f = open('./static/train_monthPriceState.html', 'w')
     f.close()
-    with open(path + '/static/train_monthPriceState.html', 'a') as f:
+    with open('./static/train_monthPriceState.html', 'a') as f:
             f.write(fig.to_html())
     f.close()              
     return st.plotly_chart(fig)
@@ -172,7 +172,6 @@ def plot_train_monthPriceState(train):
 with col1:    
     plot_train_monthPriceState(trainDF)
 
-@st.cache_resource(show_spinner=False)
 def plot_test_monthPriceState(test):
     fig = px.bar(testDF, x='listed_date_yearMonth', y='price', color='State', labels={'y':'price'},
                  hover_data=['State'],
@@ -184,9 +183,9 @@ def plot_test_monthPriceState(test):
     fig.update_yaxes(title='Price (USD)', title_font_color='black', title_font=dict(size=18), tickfont=dict(size=16, color='black'))
     fig.update_layout(uniformtext_minsize=14, uniformtext_mode='hide')    
     fig.update_traces(dict(marker_line_width=0))
-    f = open(path + '/static/test_monthPriceState.html', 'w')
+    f = open('./static/test_monthPriceState.html', 'w')
     f.close()
-    with open(path + '/static/test_monthPriceState.html', 'a') as f:
+    with open('./static/test_monthPriceState.html', 'a') as f:
             f.write(fig.to_html())
     f.close()               
     return st.plotly_chart(fig)
@@ -208,7 +207,6 @@ testDF.reset_index(drop=True, inplace=True)
 col1, col2  = st.columns(2, gap='small')
 
 # Price Color: Train/Test
-@st.cache_resource(show_spinner=False)
 def plot_train_priceColor(train):
     fig = px.box(trainDF, y='price', x='listing_color', color='listing_color', 
                  color_discrete_sequence=['#222A2A', '#2E91E5','#565656','#AF0038', '#778AAE','#E2E2E2'],
@@ -219,9 +217,9 @@ def plot_train_priceColor(train):
     fig.update_yaxes(title='Price (USD)', title_font_color='black', title_font=dict(size=18), tickfont=dict(size=16, color='black'))
     fig.update_layout(uniformtext_minsize=14, uniformtext_mode='hide')
     fig.update_traces(dict(marker_line_width=0))
-    f = open(path + '/static/train_priceColor.html', 'w')
+    f = open('./static/train_priceColor.html', 'w')
     f.close()
-    with open(path + '/static/train_priceColor.html', 'a') as f:
+    with open('./static/train_priceColor.html', 'a') as f:
             f.write(fig.to_html(full_html=True))
     f.close()                
     return st.plotly_chart(fig)
@@ -229,7 +227,6 @@ def plot_train_priceColor(train):
 with col1:
     plot_train_priceColor(trainDF)
 
-@st.cache_resource(show_spinner=False)
 def plot_test_priceColor(test):
     fig = px.box(testDF, y='price', x='listing_color', color='listing_color', 
                  color_discrete_sequence=['#222A2A', '#2E91E5','#565656','#AF0038', '#778AAE','#E2E2E2'],
@@ -240,9 +237,9 @@ def plot_test_priceColor(test):
     fig.update_yaxes(title='Price (USD)', title_font_color='black', title_font=dict(size=18), tickfont=dict(size=16, color='black'))
     fig.update_layout(uniformtext_minsize=14, uniformtext_mode='hide') 
     fig.update_traces(dict(marker_line_width=0))
-    f = open(path + '/static/test_priceColor.html', 'w')
+    f = open('./static/test_priceColor.html', 'w')
     f.close()
-    with open(path + '/static/test_priceColor.html', 'a') as f:
+    with open('./static/test_priceColor.html', 'a') as f:
             f.write(fig.to_html(full_html=True))
     f.close()              
     return st.plotly_chart(fig)
@@ -253,7 +250,6 @@ with col2:
 col1, col2  = st.columns(2, gap='small')
 
 # Price Color State: Train/Test
-@st.cache_resource(show_spinner=False)
 def plot_train_priceColorState(train):
     fig = px.bar(trainDF, y='price', x='State', color='listing_color', 
                  color_discrete_sequence=['#222A2A', '#2E91E5','#565656','#AF0038', '#778AAE','#E2E2E2'],
@@ -264,9 +260,9 @@ def plot_train_priceColorState(train):
     fig.update_yaxes(title='Price (USD)', title_font_color='black', title_font=dict(size=18), tickfont=dict(size=16, color='black'))
     fig.update_layout(uniformtext_minsize=14, uniformtext_mode='hide')
     fig.update_traces(dict(marker_line_width=0))
-    f = open(path + '/static/train_priceColorState.html', 'w')
+    f = open('./static/train_priceColorState.html', 'w')
     f.close()
-    with open(path + '/static/train_priceColorState.html', 'a') as f:
+    with open('./static/train_priceColorState.html', 'a') as f:
             f.write(fig.to_html())
     f.close()              
     return st.plotly_chart(fig)
@@ -274,7 +270,6 @@ def plot_train_priceColorState(train):
 with col1:
     plot_train_priceColorState(trainDF)
 
-@st.cache_resource(show_spinner=False)
 def plot_test_priceColorState(test):
     fig = px.bar(testDF, y='price', x='State', color='listing_color', 
                  color_discrete_sequence=['#222A2A', '#2E91E5','#565656','#AF0038', '#778AAE','#E2E2E2'],
@@ -285,9 +280,9 @@ def plot_test_priceColorState(test):
     fig.update_yaxes(title='Price (USD)', title_font_color='black', title_font=dict(size=18), tickfont=dict(size=16, color='black'))
     fig.update_layout(uniformtext_minsize=14, uniformtext_mode='hide')
     fig.update_traces(dict(marker_line_width=0))
-    f = open(path + '/static/test_priceColorState.html', 'w')
+    f = open('./static/test_priceColorState.html', 'w')
     f.close()
-    with open(path + '/static/test_priceColorState.html', 'a') as f:
+    with open('./static/test_priceColorState.html', 'a') as f:
             f.write(fig.to_html())
     f.close()                  
     return st.plotly_chart(fig)
@@ -298,7 +293,6 @@ with col2:
 col1, col2  = st.columns(2, gap='small')
 
 # Days on Market Color State: Train/Test
-@st.cache_resource(show_spinner=False)
 def plot_train_domColorState(train):
     fig = px.bar(trainDF, y='daysonmarket', x='State', color='listing_color', 
                  color_discrete_sequence=['#222A2A', '#2E91E5','#565656','#AF0038', '#778AAE','#E2E2E2'],                
@@ -310,9 +304,9 @@ def plot_train_domColorState(train):
     
     fig.update_layout(uniformtext_minsize=14, uniformtext_mode='hide')
     fig.update_traces(dict(marker_line_width=0))
-    f = open(path + '/static/train_domColorState.html', 'w')
+    f = open('./static/train_domColorState.html', 'w')
     f.close()
-    with open(path + '/static/train_domColorState.html', 'a') as f:
+    with open('./static/train_domColorState.html', 'a') as f:
             f.write(fig.to_html())
     f.close()                
     return st.plotly_chart(fig)
@@ -320,7 +314,6 @@ def plot_train_domColorState(train):
 with col1:
     plot_train_domColorState(trainDF)
 
-@st.cache_resource(show_spinner=False)
 def plot_test_domColorState(test):
     fig = px.bar(testDF, y='daysonmarket', x='State', color='listing_color',
                  color_discrete_sequence=['#222A2A', '#2E91E5','#565656','#AF0038', '#778AAE','#E2E2E2'],
@@ -331,9 +324,9 @@ def plot_test_domColorState(test):
     fig.update_yaxes(title='Duration of Time on Market (Days)', title_font_color='black', title_font=dict(size=18), tickfont=dict(size=16, color='black'))
     fig.update_layout(uniformtext_minsize=14, uniformtext_mode='hide')
     fig.update_traces(dict(marker_line_width=0))
-    f = open(path + '/static/test_domColorState.html', 'w')
+    f = open('./static/test_domColorState.html', 'w')
     f.close()
-    with open(path + '/static/test_domColorState.html', 'a') as f:
+    with open('./static/test_domColorState.html', 'a') as f:
             f.write(fig.to_html())
     f.close()                    
     return st.plotly_chart(fig)
@@ -346,13 +339,12 @@ with col2:
 st.subheader('Data Monitoring', divider='blue')
 
 # Data Quality
-path_to_html_quality = path + '/static/DataQualityPreset_report.html' 
+path_to_html_quality = './static/DataQualityPreset_report.html' 
 
-path_to_html_presets = path + '/static/data_qualityTestPresets_report.html' 
+path_to_html_presets = './static/data_qualityTestPresets_report.html' 
 
 col1, col2 = st.columns(2)
 
-@st.cache_resource(show_spinner=False)
 def plot_dataQuality(path_to_html_quality): 
     with open(path_to_html_quality,'r') as f: 
         data_quality = f.read()
@@ -364,7 +356,6 @@ def plot_dataQuality(path_to_html_quality):
 
 plot_dataQuality(path_to_html_quality)
 
-@st.cache_resource(show_spinner=False)
 def plot_dataQualityPresets(path_to_html_presets):
     
     with open(path_to_html_presets,'r') as f: 
@@ -378,13 +369,12 @@ plot_dataQualityPresets(path_to_html_presets)
 
 ###################################################################################################################
 # Data Integrity and Stability
-path_to_html_integrity = path + '/static/data_integrity_dataset_report_SummaryMissing.html' 
+path_to_html_integrity = './static/data_integrity_dataset_report_SummaryMissing.html' 
 
-path_to_html_stability = path + '/static/data_stabilityTestPresets_report.html'
+path_to_html_stability = './static/data_stabilityTestPresets_report.html'
 
 col1, col2 = st.columns(2)
 
-@st.cache_resource(show_spinner=False)
 def plot_dataIntegrity(path_to_html_integrity):
     
     with open(path_to_html_integrity,'r') as f: 
@@ -398,7 +388,6 @@ def plot_dataIntegrity(path_to_html_integrity):
     
 plot_dataIntegrity(path_to_html_integrity)
 
-@st.cache_resource(show_spinner=False)
 def plot_dataStabilty(path_to_html_stability):
     
     with open(path_to_html_stability,'r') as f: 
@@ -413,11 +402,10 @@ plot_dataStabilty(path_to_html_stability)
 
 ###################################################################################################################
 # Data Drift
-path_to_html_drift = path + '/static/data_drift_report.html'
+path_to_html_drift = './static/data_drift_report.html'
 
 col1, col2 , col3 = st.columns(3)
 
-@st.cache_resource(show_spinner=False)
 def plot_dataDrift(path_to_html_drift):
 
     with open(path_to_html_drift,'r') as f: 
@@ -432,9 +420,9 @@ data_drift = plot_dataDrift(path_to_html_drift)
 ###################################################################################################################
 ###################################################################################################################
 # Load models
-os.environ['LGB_MODEL_DIR'] = path + '/lightgbm/model/usedcars_lgbm_model.pkl'
-os.environ['CAT_MODEL_DIR'] = path + '/catboost/model/usedcars_cat_model'
-os.environ['XGB_MODEL_DIR'] = path + '/xgboost/model/usedcars_xgb_model.bin'
+os.environ['LGB_MODEL_DIR'] = './lightgbm/model/usedcars_lgbm_model.pkl'
+os.environ['CAT_MODEL_DIR'] = './catboost/model/usedcars_cat_model'
+os.environ['XGB_MODEL_DIR'] = './xgboost/model/usedcars_xgb_model.bin'
 
 @st.cache_resource(show_spinner=False)
 def load_lgb_model():
@@ -501,11 +489,12 @@ st.write('R^2 train: %.3f, test: %.3f' % (
 st.subheader('LightGBM: Feature Importance', divider='blue')
 
 # Train set
-path_train_summary = path + '/lightgbm/results/LGBM_ShapSummary_TrainSet.png'
+col1, col2 = st.columns(2)
 
-path_train_force = path + '/lightgbm/results/LGBM_ShapForce_TrainSet.png'
+path_train_summary = './lightgbm/results/LGBM_ShapSummary_TrainSet.png'
 
-@st.cache_resource(show_spinner=False)
+path_train_force = './lightgbm/results/LGBM_ShapForce_TrainSet.png'
+
 def plot_lgb_train_shap(path_train_summary, path_train_force):
 
     with col1:
@@ -519,11 +508,10 @@ plot_lgb_train_shap(path_train_summary, path_train_force)
 # Test set
 col1, col2 = st.columns(2)
 
-path_test_summary = path + '/lightgbm/results/LGBM_ShapSummary_TestSet.png'
+path_test_summary = './lightgbm/results/LGBM_ShapSummary_TestSet.png'
 
-path_test_force = path + '/lightgbm/results/LGBM_ShapForce_TestSet.png'
+path_test_force = './lightgbm/results/LGBM_ShapForce_TestSet.png'
 
-@st.cache_resource(show_spinner=False)
 def plot_lgb_test_shap(path_test_summary, path_test_force):
 
     with col1:
@@ -555,7 +543,7 @@ st.write('R^2 train: %.3f, test: %.3f' % (
 
 st.subheader('Catboost: Feature Importance', divider='blue')
 
-st.image(path + '/catboost/results/Cat_FeatureImportance.png')
+st.image('./catboost/results/Cat_FeatureImportance.png')
 
 # SHAP
 st.subheader('Catboost: Model-based SHAP', divider='blue')
@@ -563,11 +551,10 @@ st.subheader('Catboost: Model-based SHAP', divider='blue')
 col1, col2 = st.columns(2)
 
 # Train set
-path_train_summary = path + '/catboost/results/Cat_ShapSummary_TrainSet.png'
+path_train_summary = './catboost/results/Cat_ShapSummary_TrainSet.png'
 
-path_train_force = path + '/catboost/results/Cat_ShapForce_TrainSet.png'
+path_train_force = './catboost/results/Cat_ShapForce_TrainSet.png'
 
-@st.cache_resource(show_spinner=False)
 def plot_cat_train_shap(path_train_summary, path_train_force):
 
     with col1:
@@ -581,11 +568,10 @@ plot_cat_train_shap(path_train_summary, path_train_force)
 col1, col2 = st.columns(2)
 
 # Test set
-path_test_summary = path + '/catboost/results/Cat_ShapSummary_TestSet.png'
+path_test_summary = './catboost/results/Cat_ShapSummary_TestSet.png'
 
-path_test_force = path + '/catboost/results/Cat_ShapForce_TestSet.png'
+path_test_force = './catboost/results/Cat_ShapForce_TestSet.png'
 
-@st.cache_resource(show_spinner=False)
 def plot_cat_test_shap(path_test_summary, path_test_force):
 
     with col1:
@@ -617,7 +603,7 @@ st.write('R^2 train: %.3f, test: %.3f' % (
 
 st.subheader('XGBoost: Feature Importance', divider='blue')
 
-st.image(path + '/xgboost/results/XGB_FeatureImportance.png')
+st.image('./xgboost/results/XGB_FeatureImportance.png')
 
 # SHAP
 st.subheader('XGBoost: Model-based SHAP', divider='blue')
@@ -625,11 +611,10 @@ st.subheader('XGBoost: Model-based SHAP', divider='blue')
 col1, col2 = st.columns(2)
 
 # Train set
-path_train_summary = path + '/xgboost/results/XGB_ShapSummary_TrainSet.png'
+path_train_summary = './xgboost/results/XGB_ShapSummary_TrainSet.png'
 
-path_train_force = path + '/xgboost/results/XGB_ShapForce_TrainSet.png'
+path_train_force = './xgboost/results/XGB_ShapForce_TrainSet.png'
 
-@st.cache_resource(show_spinner=False)
 def plot_xgb_train_shap(path_train_summary, path_train_force):
 
     with col1:
@@ -643,11 +628,10 @@ plot_xgb_train_shap(path_train_summary, path_train_force)
 col1, col2 = st.columns(2)
 
 # Test set
-path_test_summary = path + '/xgboost/results/XGB_ShapSummary_TestSet.png'
+path_test_summary = './xgboost/results/XGB_ShapSummary_TestSet.png'
 
-path_test_force = path + '/xgboost/results/XGB_ShapForce_TestSet.png'
+path_test_force = './xgboost/results/XGB_ShapForce_TestSet.png'
 
-@st.cache_resource(show_spinner=False)
 def plot_xgb_test_shap(path_test_summary, path_test_force):
 
     with col1:

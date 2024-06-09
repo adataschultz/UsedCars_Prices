@@ -91,9 +91,30 @@ The structure of deploying models with a `Streamlit` frontend and `FastAPI` back
 ## To run the app locally using docker compose:
 Edit the endpoint in `frontend/app.py` to http://localhost:80/predict or the docker url given the build.
 Open a terminal with docker running, then run:<br>
+
 <code>docker compose build</code><br>
 and successively<br>
+
 <code>docker compose up</code>
 
-To visit the FastAPI UI, visit http://localhost:80 and to visit the streamlit UI use http://localhost:8501.
+To visit the FastAPI UI, visit http://localhost:80 and to visit the streamlit UI use http://localhost:8501
+
+# `Streamlit Cloud` and `Heroku`
+The frontend app can be viewed on `Streamlit Cloud` at https://predicting-used-vehicles-prices.streamlit.app/
+
+The frontend app can be viewed on `Heroku` at https://app-usedcars-836bbb4de9f1.herokuapp.com/
+
+## App Deployment on Google Cloud Platform
+This application is currently hosted on `Google Cloud Platform` using `Cloud Run` using two separate containers for the frontend and backend.
+
+The steps to host the app on Google Cloud Platform are:
+
+1. Create a `GCP` billing account.
+2. Enable `Cloud Run` and `Artifact Registry` APIs.
+3. Activate the `Cloud Shell`, authorize docker in a specified region and create a repository in `Artifact Registry`
+4. Then clone the [Used Car Repository](https://github.com/adataschultz/UsedCars_Prices/tree/main) in the `Cloud Shell`
+5. Next, move to the `Deploy/app_usedCars` directory and run `docker compose build`
+5. Then tag and push both the frontend and backend to `Artifact Registry`
+6. Next, create the two `Cloud Run` services for the `Streamlit` frontend and `FastAPI`backend. The frontend uses the same URL generated for the backend service to run requests.
+7. Connect `Cloud Build` to the GitHub repository to set up a trigger when the `main` branch is updated.
 

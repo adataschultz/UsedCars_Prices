@@ -8,11 +8,11 @@ requests==2.31.0
 python-multipart==0.0.9
 uvicorn==0.27.1
 #xgboost==2.0.3
-#https://github.com/dmlc/xgboost/releases/download/v2.0.3/xgboost-2.0.3.tar.gz
-#catboost==1.0.6
+https://github.com/dmlc/xgboost/releases/download/v2.0.3/xgboost-2.0.3.tar.gz
+catboost==1.0.6
 #https://github.com/catboost/catboost/archive/refs/tags/v1.0.6.tar.gz
 #lightgbm==4.3.0
-#https://github.com/microsoft/LightGBM/releases/download/v4.3.0/lightgbm-4.3.0.tar.gz
+https://github.com/microsoft/LightGBM/releases/download/v4.3.0/lightgbm-4.3.0.tar.gz
 scikit-learn==1.4.2
 scipy==1.13.0
 matplotlib==3.7.0

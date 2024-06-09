@@ -2,19 +2,12 @@ import streamlit as st
 st.set_page_config(page_title='Predicting the Price of Used Vehicles',
                    layout='wide')
 import os
-<<<<<<< HEAD
-=======
-import path
 import sys
->>>>>>> 6ef7d6adf5338ae7d5ee9e5a4f73efce0775e9e9
 import random
 import numpy as np
 import warnings
 import pandas as pd
-<<<<<<< HEAD
 import streamlit.components.v1 as components
-=======
->>>>>>> 6ef7d6adf5338ae7d5ee9e5a4f73efce0775e9e9
 warnings.filterwarnings('ignore')
 
 seed_value = 42

@@ -1,0 +1,14 @@
+aliases: []
+creation_timestamp: 1717883149107
+current_stage: None
+description: null
+last_updated_timestamp: 1717883149107
+name: usedcars_xgb_model
+run_id: 5fd3dfacad3c4eb1b7e6a72789776923
+run_link: null
+source: file:///mnt/UsedCars_Prices/Deploy/app_usedCars/frontend/xgboost/mlruns/0/5fd3dfacad3c4eb1b7e6a72789776923/artifacts/usedcars_xgb_model
+status: READY
+status_message: null
+storage_location: file:///mnt/UsedCars_Prices/Deploy/app_usedCars/frontend/xgboost/mlruns/0/5fd3dfacad3c4eb1b7e6a72789776923/artifacts/usedcars_xgb_model
+user_id: null
+version: 1

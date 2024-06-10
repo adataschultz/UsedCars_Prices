@@ -1,0 +1,14 @@
+aliases: []
+creation_timestamp: 1717883191269
+current_stage: None
+description: null
+last_updated_timestamp: 1717883191269
+name: usedcars_lgbm_model
+run_id: 129fd4cfb05a49229d04c515bcf35e23
+run_link: null
+source: file:///mnt/UsedCars_Prices/Deploy/app_usedCars/frontend/lightgbm/mlruns/0/129fd4cfb05a49229d04c515bcf35e23/artifacts/usedcars_lgbm_model
+status: READY
+status_message: null
+storage_location: file:///mnt/UsedCars_Prices/Deploy/app_usedCars/frontend/lightgbm/mlruns/0/129fd4cfb05a49229d04c515bcf35e23/artifacts/usedcars_lgbm_model
+user_id: null
+version: 1

@@ -1,0 +1,6 @@
+artifact_location: file:///mnt/UsedCars_Prices/Deploy/app_usedCars/frontend/xgboost/mlruns/0
+creation_time: 1717883118247
+experiment_id: '0'
+last_update_time: 1717883118247
+lifecycle_stage: active
+name: Default

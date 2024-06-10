@@ -1,0 +1,15 @@
+artifact_uri: file:///mnt/UsedCars_Prices/Deploy/app_usedCars/frontend/catboost/mlruns/0/5af33b60af8040cea7abc3ff7f3a9462/artifacts
+end_time: 1717883284025
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 5af33b60af8040cea7abc3ff7f3a9462
+run_name: capable-auk-759
+run_uuid: 5af33b60af8040cea7abc3ff7f3a9462
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1717883088412
+status: 3
+tags: []
+user_id: aschultz

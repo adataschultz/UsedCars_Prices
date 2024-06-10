@@ -1,0 +1,19 @@
+artifact_path: usedcars_lgbm_model
+flavors:
+  lightgbm:
+    code: null
+    data: model.pkl
+    lgb_version: 4.3.0
+    model_class: lightgbm.sklearn.LGBMRegressor
+  python_function:
+    data: model.pkl
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.lightgbm
+    python_version: 3.10.14
+mlflow_version: 2.12.2
+model_size_bytes: 15501092
+model_uuid: 5fd71d0d2db148df9f925fc48a569f42
+run_id: 129fd4cfb05a49229d04c515bcf35e23
+utc_time_created: '2024-06-08 21:46:29.915079'

@@ -52,4 +52,4 @@ Models were trained using:
 
 
 ## `Deploy Models`
-The `Streamlit` frontend was deployed using `Streamlit Cloud` and `Heroku`. The `Streamlit` frontend and the `FastAPI` backend was deployed using `CloudRun` on `Google Cloud Platform` where the user can upload a dataset in a `csv` file and predictions are generated for the `predicted price`, the `predicted difference` and the `predicted percentage difference' compared to the actual vehicle `price` using `LightGBM`, `Catboost` and `XGBoost`.
+The `Streamlit` frontend was deployed using `Streamlit Cloud` and `Heroku`. The `Streamlit` frontend and the `FastAPI` backend was deployed using `CloudRun` on `Google Cloud Platform` where the user can upload a dataset in a `csv` file and predictions are generated for the `predicted price`, the `predicted difference` and the `predicted percentage difference` compared to the actual vehicle `price` using `LightGBM`, `Catboost` and `XGBoost`.

@@ -1,5 +1,5 @@
 services:
-  vehicle-app-backend:
+  usedvehicle-app-backend:
     build: backend/
     ports:
       - "80:80"
@@ -7,19 +7,19 @@ services:
       - ./backend:/app/backend
     networks:
       - deploy_network
-    container_name: vehicle-app-backend
+    container_name: usedvehicle-app-backend
 
-  vehicle-app:
+  usedvehicle-app:
     build: frontend/
     depends_on:
-      - vehicle-app-backend
+      - usedvehicle-app-backend
     volumes:
       - ./frontend:/app/frontend
     ports:
         - "8501:8501"
     networks:
       - deploy_network
-    container_name: vehicle-app
+    container_name: usedvehicle-app
 
 networks:
   deploy_network:

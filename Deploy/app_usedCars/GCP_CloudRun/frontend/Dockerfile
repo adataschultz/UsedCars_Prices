@@ -27,20 +27,18 @@ COPY /static /static
 COPY app.py .                                                                                                           
 COPY requirements.txt requirements.txt   
 
-# Upgrade pip and install requirements                                                                              
-RUN pip3 install --upgrade pip --no-cache-dir -r requirements.txt
-
+# Set environment variables                                                                    
 ENV TRAIN_DATA_DIR=/data/usedCars_trainSet.parquet.gzip
 ENV TEST_DATA_DIR=/data/usedCars_testSet.parquet.gzip
 ENV XGB_MODEL_DIR=/xgboost/model/usedcars_xgb_model.bin
 ENV CAT_MODEL_DIR=/catboost/model/usedcars_cat_model
 ENV LGB_MODEL_DIR=/lightgbm/model/usedcars_lgbm_model.pkl
 
-# Copy application code
-COPY . .
+# Upgrade pip and install requirements                                                                              
+RUN pip3 install --upgrade pip --no-cache-dir -r requirements.txt
 
 # Expose port
 EXPOSE 8501
 
 # Run the application
-CMD ["python", "-m", "streamlit", "run", "app.py"]
+CMD ['python', '-m', 'streamlit', 'run', 'app.py']

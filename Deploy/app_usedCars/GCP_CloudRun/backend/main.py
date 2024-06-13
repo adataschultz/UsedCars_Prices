@@ -1,19 +1,31 @@
 # Import Needed Libraries
 import os
+import path
+import sys
+import random
+import numpy as np
+import warnings
 import uvicorn
 from fastapi import FastAPI, File
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse, HTMLResponse
 import numpy as np
 import pandas as pd
-import lightgbm as lgb
-from lightgbm import LGBMRegressor
+import joblib
 from catboost import CatBoostRegressor
 import xgboost as xgb
-from xgboost import XGBRegressor
-import joblib
 import io
-from io import StringIO, BytesIO
+warnings.filterwarnings('ignore')
+
+# Set path
+dir = path.Path(__file__).abspath()
+sys.path.append(dir.parent.parent)
+
+# Set seed
+seed_value = 42
+os.environ['usedCars_GPU'] = str(seed_value)
+random.seed(seed_value)
+np.random.seed(seed_value)
 
 #uvicorn  main:app --port 80
 
@@ -29,20 +41,17 @@ os.environ['CAT_MODEL_DIR'] = '../catboost/model/usedcars_cat_model'
 os.environ['XGB_MODEL_DIR'] = '../xgboost/model/usedcars_xgb_model.bin'
 
 # Path to the model
-@st.cache_resource
 def load_lgb_model():
     lgb_path = os.environ['LGB_MODEL_DIR']
     model = joblib.load(open(lgb_path,'rb'))
     return model
 
-@st.cache_resource
 def load_cat_model():
     cat_path = os.environ['CAT_MODEL_DIR']
     model = CatBoostRegressor()
     model.load_model(cat_path)
     return model
 
-@st.cache_resource
 def load_xgb_model():
     xgb_path = os.environ['XGB_MODEL_DIR']
     model = xgb.Booster()
@@ -60,7 +69,7 @@ async def open():
     <body>
     <h2> Welcome to the End to End Used Cars Project</h2>
     <p> The model and FastAPI instances have been set up successfully </p>
-    <p> You can view the FastAPI UI by heading to localhost:8000 </p>
+    <p> You can view the FastAPI UI by heading to localhost:80 </p>
     <p> Proceed to initialize the Streamlit UI (frontend/app.py) to submit prediction requests </p>
     </body>
     '''
@@ -118,7 +127,9 @@ async def predict(file: bytes = File(...)):
     
     # Concatenate, convert to dataframe and dictionary
     preds_final = np.concatenate([df_lgb, df_cat, df_xgb])
-    preds_final = pd.DataFrame(preds_final, columns=['price', 'predicted_price', 'predicted_difference', 'predicted_percentageDiff', 'algorithm'])
+    preds_final = pd.DataFrame(preds_final, columns=['price', 'predicted_price', 
+                                                     'predicted_difference', 
+                                                     'predicted_percentageDiff', 'algorithm'])
     preds_final = preds_final.to_dict()
     
     # Convert predictions into JSON format

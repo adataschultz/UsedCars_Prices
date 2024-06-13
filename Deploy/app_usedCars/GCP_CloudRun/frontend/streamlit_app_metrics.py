@@ -9,42 +9,38 @@ import random
 import numpy as np
 import warnings
 import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
-import streamlit.components.v1 as components
 import dill as pickle
 import lightgbm
 from lightgbm import LGBMRegressor
 from catboost import CatBoostRegressor
 import xgboost as xgb
-from xgboost import XGBRegressor, plot_importance
+from xgboost import XGBRegressor
 import joblib
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-import matplotlib.pyplot as plt
-import seaborn as sns
-import shap
 warnings.filterwarnings('ignore')
 gc.collect()
 
+# Set seed
 seed_value = 42
 os.environ['usedCars_GPU'] = str(seed_value)
 random.seed(seed_value)
 np.random.seed(seed_value)
 
 # Set path
-#path = '/mnt/UsedCars_Prices/Deploy/app_usedCars/frontend'
-#path = '/mount/src/usedcars_prices/Deploy/app_usedCars/frontend'
+#path = '/mnt/UsedCars_Prices/Deploy/app_usedCars/GCP_CloudRun/frontend'
+#path = '/mount/src/usedcars_prices/Deploy/app_usedCars/GCP_CloudRun/frontend'
 #os.chdir(path)
 dir = path.Path(__file__).abspath()
 sys.path.append(dir.parent.parent)
 
-st.markdown("<h1 style='text-align: center; color: black;'>Predicting the Price of Used Vehicles from CarGurus</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: black;'>Predicting the Price of Used Vehicles from CarGurus</h1>", 
+            unsafe_allow_html=True)
 
 # Set number of columns
 col1, col2 , col3 = st.columns(3)
 
 # Price State: train/test
-path_to_html = './static/traintest_priceState.html'
+path_to_html = '../static/traintest_priceState.html'
 
 def plot_traintest_monthPriceState(path_to_html):
     
@@ -61,7 +57,7 @@ del path_to_html, plot_traintest_monthPriceState
 # Year State: Train
 col1, col2  = st.columns(2, gap='small')
 
-path_to_html = './static/train_yearState.html'
+path_to_html = '../static/train_yearState.html'
 
 def plot_train_yearState(path_to_html):
     
@@ -76,7 +72,7 @@ plot_train_yearState(path_to_html)
 del path_to_html, plot_train_yearState
 
 # Year State: Test
-path_to_html = './static/test_yearState.html'
+path_to_html = '../static/test_yearState.html'
 
 def plot_test_yearState(path_to_html):
     
@@ -95,7 +91,7 @@ gc.collect()
 # Month Price State: Train
 col1, col2  = st.columns(2, gap='small')
 
-path_to_html = './static/train_monthPriceState.html'
+path_to_html = '../static/train_monthPriceState.html'
 
 def plot_train_monthPriceState(path_to_html):
     
@@ -110,7 +106,7 @@ plot_train_monthPriceState(path_to_html)
 del path_to_html, plot_train_monthPriceState
 
 # Month Price State: Test
-path_to_html = './static/test_monthPriceState.html'
+path_to_html = '../static/test_monthPriceState.html'
 
 def plot_test_monthPriceState(path_to_html):
     
@@ -129,7 +125,7 @@ gc.collect()
 # Price Color: Train
 col1, col2  = st.columns(2, gap='small')
 
-path_to_html = './static/train_priceColor.html'
+path_to_html = '../static/train_priceColor.html'
 
 def plot_train_priceColor(path_to_html):
     
@@ -144,7 +140,7 @@ plot_train_priceColor(path_to_html)
 del path_to_html, plot_train_priceColor
 
 # Price Color: Test
-path_to_html = './static/test_priceColor.html'
+path_to_html = '../static/test_priceColor.html'
 
 def plot_test_priceColor(path_to_html):
     
@@ -163,7 +159,7 @@ gc.collect()
 # Price Color State: Train
 col1, col2  = st.columns(2, gap='small')
 
-path_to_html = './static/train_priceColorState.html'
+path_to_html = '../static/train_priceColorState.html'
 
 def plot_train_PriceColorState(path_to_html):
     
@@ -178,7 +174,7 @@ plot_train_PriceColorState(path_to_html)
 del path_to_html, plot_train_PriceColorState
 
 # Price Color State: Test
-path_to_html = './static/test_priceColorState.html'
+path_to_html = '../static/test_priceColorState.html'
 
 def plot_test_PriceColorState(path_to_html):
     
@@ -197,7 +193,7 @@ gc.collect()
 # Days on Market Color State: Train
 col1, col2  = st.columns(2, gap='small')
 
-path_to_html = './static/train_domColorState.html'
+path_to_html = '../static/train_domColorState.html'
 
 def plot_train_domColorState(path_to_html):
     
@@ -212,7 +208,7 @@ plot_train_domColorState(path_to_html)
 del path_to_html, plot_train_domColorState
 
 # Days on Market Color State: Test
-path_to_html = './static/test_domColorState.html'
+path_to_html = '../static/test_domColorState.html'
 
 def plot_test_domColorState(path_to_html):
     
@@ -233,9 +229,9 @@ gc.collect()
 st.subheader('Data Monitoring', divider='blue')
 
 # Data Quality
-path_to_html_quality = './static/DataQualityPreset_report.html' 
+path_to_html_quality = '../static/DataQualityPreset_report.html' 
 
-path_to_html_presets = './static/data_qualityTestPresets_report.html' 
+path_to_html_presets = '../static/data_qualityTestPresets_report.html' 
 
 col1, col2 = st.columns(2)
 
@@ -271,9 +267,9 @@ gc.collect()
 
 ###################################################################################################################
 # Data Integrity and Stability
-path_to_html_integrity = './static/data_integrity_dataset_report_SummaryMissing.html' 
+path_to_html_integrity = '../static/data_integrity_dataset_report_SummaryMissing.html' 
 
-path_to_html_stability = './static/data_stabilityTestPresets_report.html'
+path_to_html_stability = '../static/data_stabilityTestPresets_report.html'
 
 col1, col2 = st.columns(2)
 
@@ -312,7 +308,7 @@ gc.collect()
 
 ###################################################################################################################
 # Data Drift
-path_to_html_drift = './static/data_drift_report.html'
+path_to_html_drift = '../static/data_drift_report.html'
 
 col1, col2 , col3 = st.columns(3)
 
@@ -337,14 +333,14 @@ gc.collect()
 @st.cache_data
 def load_data():
     try:
-        train_data = pd.read_parquet('./data/usedCars_trainSet.parquet.gzip')
-        test_data = pd.read_parquet('./data/usedCars_testSet.parquet.gzip')
+        train_data = pd.read_parquet('../data/usedCars_trainSet.parquet.gzip')
+        test_data = pd.read_parquet('../data/usedCars_testSet.parquet.gzip')
         return train_data, test_data
     except Exception as ex:
         raise(f'Error in loading file: {ex}', str(ex))
         
 # Load models
-os.environ['LGB_MODEL_DIR'] = './lightgbm/model/usedcars_lgbm_model.pkl'
+os.environ['LGB_MODEL_DIR'] = '../lightgbm/model/usedcars_lgbm_model.pkl'
 
 @st.cache_resource
 def load_lgb_model():
@@ -361,6 +357,10 @@ test_label = testDF[['price']]
 train_features = trainDF.drop(columns = ['price'])
 test_features = testDF.drop(columns = ['price'])
 
+del load_data, trainDF, testDF
+
+gc.collect()
+
 train_Features = pd.get_dummies(train_features, drop_first=True)
 test_Features = pd.get_dummies(test_features, drop_first=True)
 
@@ -371,6 +371,8 @@ st.subheader('Models Metrics for Used Vehicle Price Prediction Using LightGBM', 
 
 y_train_pred = model_lgb.predict(train_Features)
 y_test_pred = model_lgb.predict(test_Features)
+
+del load_lgb_model, model_lgb
 
 st.write('MAE train: %.3f, test: %.3f' % (
         mean_absolute_error(train_label, y_train_pred),
@@ -387,11 +389,11 @@ st.write('R^2 train: %.3f, test: %.3f' % (
 
 del y_train_pred, y_test_pred
 
-st.subheader('LightGBM: Feature Importance', divider='blue')
+gc.collect()
 
 st.subheader('LightGBM: Feature Importance', divider='blue')
 
-path_lgbm_importance = './lightgbm/results/LGBM_FeatureImportance.png'
+path_lgbm_importance = '../lightgbm/results/LGBM_FeatureImportance.png'
 
 def plot_lgb_importance(path_lgbm_importance):
 
@@ -409,9 +411,9 @@ st.subheader('LightGBM: Model-based SHAP', divider='blue')
 col1, col2 = st.columns(2)
 
 # Train set
-path_train_summary = './lightgbm/results/LGBM_ShapSummary_TrainSet.png'
+path_train_summary = '../lightgbm/results/LGBM_ShapSummary_TrainSet.png'
 
-path_train_force = './lightgbm/results/LGBM_ShapForce_TrainSet.png'
+path_train_force = '../lightgbm/results/LGBM_ShapForce_TrainSet.png'
 
 def plot_lgb_train_shap(path_train_summary, path_train_force):
 
@@ -428,9 +430,9 @@ del path_train_summary, path_train_force, plot_lgb_train_shap
 # Test set
 col1, col2 = st.columns(2)
 
-path_test_summary = './lightgbm/results/LGBM_ShapSummary_TestSet.png'
+path_test_summary = '../lightgbm/results/LGBM_ShapSummary_TestSet.png'
 
-path_test_force = './lightgbm/results/LGBM_ShapForce_TestSet.png'
+path_test_force = '../lightgbm/results/LGBM_ShapForce_TestSet.png'
 
 def plot_lgb_test_shap(path_test_summary, path_test_force):
 
@@ -454,7 +456,7 @@ categorical_features_indices = ['body_type', 'fuel_type', 'listing_color',
                                 'listed_date_yearMonth', 'is_new']
 
 # Load models
-os.environ['CAT_MODEL_DIR'] = './catboost/model/usedcars_cat_model'
+os.environ['CAT_MODEL_DIR'] = '../catboost/model/usedcars_cat_model'
 
 @st.cache_resource
 def load_cat_model():
@@ -467,6 +469,10 @@ model_cat = load_cat_model()
 
 y_train_pred = model_cat.predict(train_features)
 y_test_pred = model_cat.predict(test_features)
+
+del load_cat_model, model_cat, train_features, test_features
+
+gc.collect()
 
 st.write('MAE train: %.3f, test: %.3f' % (
         mean_absolute_error(train_label, y_train_pred),
@@ -481,11 +487,13 @@ st.write('R^2 train: %.3f, test: %.3f' % (
         r2_score(train_label, y_train_pred),
         r2_score(test_label, y_test_pred)))    
 
-del y_train_pred, y_test_pred
+del y_train_pred, y_test_pred, categorical_features_indices
+
+gc.collect()
 
 st.subheader('Catboost: Feature Importance', divider='blue')
 
-path_cat_importance = './catboost/results/Cat_FeatureImportance.png'
+path_cat_importance = '../catboost/results/Cat_FeatureImportance.png'
 
 def plot_cat_importance(path_cat_importance):
 
@@ -503,9 +511,9 @@ st.subheader('Catboost: Model-based SHAP', divider='blue')
 col1, col2 = st.columns(2)
 
 # Train set
-path_train_summary = './catboost/results/Cat_ShapSummary_TrainSet.png'
+path_train_summary = '../catboost/results/Cat_ShapSummary_TrainSet.png'
 
-path_train_force = './catboost/results/Cat_ShapForce_TrainSet.png'
+path_train_force = '../catboost/results/Cat_ShapForce_TrainSet.png'
 
 def plot_cat_train_shap(path_train_summary, path_train_force):
 
@@ -522,9 +530,9 @@ del path_train_summary, path_train_force, plot_cat_train_shap
 col1, col2 = st.columns(2)
 
 # Test set
-path_test_summary = './catboost/results/Cat_ShapSummary_TestSet.png'
+path_test_summary = '../catboost/results/Cat_ShapSummary_TestSet.png'
 
-path_test_force = './catboost/results/Cat_ShapForce_TestSet.png'
+path_test_force = '../catboost/results/Cat_ShapForce_TestSet.png'
 
 def plot_cat_test_shap(path_test_summary, path_test_force):
 
@@ -547,7 +555,7 @@ dtrain = xgb.DMatrix(train_Features, label=train_label)
 dtest = xgb.DMatrix(test_Features, label=test_label)
 
 # Load models
-os.environ['XGB_MODEL_DIR'] = './xgboost/model/usedcars_xgb_model.bin'
+os.environ['XGB_MODEL_DIR'] = '../xgboost/model/usedcars_xgb_model.bin'
 
 @st.cache_resource
 def load_xgb_model():
@@ -560,6 +568,10 @@ model_xgb = load_xgb_model()
 
 y_train_pred = model_xgb.predict(dtrain)
 y_test_pred = model_xgb.predict(dtest)
+
+del load_xgb_model, model_xgb, dtrain, dtest
+
+gc.collect()
 
 st.write('MAE train: %.3f, test: %.3f' % (
         mean_absolute_error(train_label, y_train_pred),
@@ -574,11 +586,13 @@ st.write('R^2 train: %.3f, test: %.3f' % (
         r2_score(train_label, y_train_pred),
         r2_score(test_label, y_test_pred)))    
 
-del y_train_pred, y_test_pred
+del train_label, y_train_pred, test_label, y_test_pred
+
+gc.collect()
 
 st.subheader('XGBoost: Feature Importance', divider='blue')
 
-path_xgb_importance = './xgboost/results/XGB_FeatureImportance.png'
+path_xgb_importance = '../xgboost/results/XGB_FeatureImportance.png'
 
 def plot_xgb_importance(path_xgb_importance):
 
@@ -596,9 +610,9 @@ st.subheader('XGBoost: Model-based SHAP', divider='blue')
 col1, col2 = st.columns(2)
 
 # Train set
-path_train_summary = './xgboost/results/XGB_ShapSummary_TrainSet.png'
+path_train_summary = '../xgboost/results/XGB_ShapSummary_TrainSet.png'
 
-path_train_force = './xgboost/results/XGB_ShapForce_TrainSet.png'
+path_train_force = '../xgboost/results/XGB_ShapForce_TrainSet.png'
 
 def plot_xgb_train_shap(path_train_summary, path_train_force):
 
@@ -615,9 +629,9 @@ del path_train_summary, path_train_force, plot_xgb_train_shap
 col1, col2 = st.columns(2)
 
 # Test set
-path_test_summary = './xgboost/results/XGB_ShapSummary_TestSet.png'
+path_test_summary = '../xgboost/results/XGB_ShapSummary_TestSet.png'
 
-path_test_force = './xgboost/results/XGB_ShapForce_TestSet.png'
+path_test_force = '../xgboost/results/XGB_ShapForce_TestSet.png'
 
 def plot_xgb_test_shap(path_test_summary, path_test_force):
 

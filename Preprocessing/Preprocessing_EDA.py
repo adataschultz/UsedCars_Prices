@@ -1,23 +1,18 @@
-# -*- coding: utf-8 -*-
-"""
-@author: aschu
-"""
-import random
+# Used Cars Preprocessing 
 import os
+import random
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from uszipcode import SearchEngine
-
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
-
 my_dpi = 96 # Change resolution quality
 
 # Set seed 
 seed_value = 42
-os.environ['UsedCarPrices_CarGurus_PreprocessingEDA'] = str(seed_value)
+os.environ['UsedCars_Prices_PreprocessingEDA'] = str(seed_value)
 random.seed(seed_value)
 np.random.seed(seed_value)
 
@@ -25,7 +20,7 @@ print('\nUsed Car Prices from CarGurus Preprocessing & EDA')
 print('======================================================================')
 
 # Set path
-path = r'D:\UsedCarPrices_CarGurus\Data'
+path = '/mnt/UsedCars_Prices/Data'
 os.chdir(path)
 
 # Read data
@@ -74,13 +69,13 @@ print('======================================================================')
 ###############################################################################
 # Remove missing rows to retain the most columns
 df = df[df.major_options.notna() & df.mileage.notna() & df.engine_displacement.notna() 
-         & df.transmission_display.notna() & df.seller_rating.notna()
-         & df.engine_cylinders.notna() 
-         & df.back_legroom.notna() & df.wheel_system.notna() 
-         & df.interior_color.notna() 
-         & df.body_type.notna() & df.exterior_color.notna()  
-         & df.franchise_make.notna() & df.torque.notna() 
-         & df.highway_fuel_economy.notna() & df.city_fuel_economy & df.power.notna()]
+        & df.transmission_display.notna() & df.seller_rating.notna()
+        & df.engine_cylinders.notna() 
+        & df.back_legroom.notna() & df.wheel_system.notna() 
+        & df.interior_color.notna() 
+        & df.body_type.notna() & df.exterior_color.notna()  
+        & df.franchise_make.notna() & df.torque.notna() 
+        & df.highway_fuel_economy.notna() & df.city_fuel_economy & df.power.notna()]
 
 print('Dimensions when removing missing rows to retain the most columns:')
 print(df.shape)
@@ -88,7 +83,7 @@ print('======================================================================')
 
 ###############################################################################
 # Change path for EDA results
-path = r'D:\UsedCarPrices_CarGurus\EDA'
+path = '/mnt/UsedCars_Prices/EDA'
 os.chdir(path)
 
 # Examine year to maintain price comparisons
@@ -99,11 +94,11 @@ print('======================================================================')
 plt.rcParams.update({'font.size': 7})
 sns.countplot(x='year', data=df).set_title('Count of Postings in Each Year')
 plt.xticks(rotation=90)
-plt.savefig('InitialYearCount.png', dpi=my_dpi * 10, bbox_inches='tight')
+plt.savefig('InitialYearCount.png', dpi=my_dpi*10, bbox_inches='tight')
 
 # Examine distribution of year
 sns.boxplot(x=df['year']).set_title('Distribution of Year')
-plt.savefig('InitialYearBoxplot.png', dpi=my_dpi * 10, bbox_inches='tight')
+plt.savefig('InitialYearBoxplot.png', dpi=my_dpi*10, bbox_inches='tight')
 
 # Filter data by year due to count and distribution
 df = df.loc[df['year'] >= 2016]
@@ -112,7 +107,7 @@ print('======================================================================')
 
 # Count of postings in each year >= 2016
 sns.countplot(x='year', data=df).set_title('Count of Postings in Each Year')
-plt.savefig('Year_2016plus_Count.png', dpi=my_dpi * 10, bbox_inches='tight')
+plt.savefig('Year_2016plus_Count.png', dpi=my_dpi*10, bbox_inches='tight')
 print('======================================================================') 
 
 print('\nExamine when the cars were listed:')
@@ -197,7 +192,7 @@ df1['City'] = df1['dealer_zip_unique'].fillna(0).astype(int).apply(zcode_city)
 
 # Merge data using right join
 df = pd.merge(df, df1, how='right', left_on=['city','dealer_zip'], 
-              right_on = ['City','dealer_zip_unique'])
+              right_on=['City','dealer_zip_unique'])
 df.drop_duplicates()
 df = df.drop(['dealer_zip_unique', 'City', 'dealer_zip'], axis=1)
 
@@ -215,13 +210,13 @@ print('======================================================================')
 
 # Examine for other variables unable to impute probalistically
 def data_type_quality_table(df):
-        var_type = df.dtypes
-        unique_count = df.nunique()
-        val_table = pd.concat([var_type, unique_count], axis=1)
-        val_table_ren_columns = val_table.rename(
-        columns = {0 : 'Data Type', 1 : 'Number Unique'})
-        print ('The selected dataframe has ' + str(df.shape[1]) + ' columns.\n')
-        return val_table_ren_columns
+    var_type = df.dtypes
+    unique_count = df.nunique()
+    val_table = pd.concat([var_type, unique_count], axis=1)
+    val_table_ren_columns = val_table.rename(
+    columns = {0: 'Data Type', 1: 'Number Unique'})
+    print ('The selected dataframe has ' + str(df.shape[1]) + ' columns.\n')
+    return val_table_ren_columns
 
 print('\nData Type & Uniqueness Report') 
 print(data_type_quality_table(df))
@@ -239,7 +234,7 @@ print('======================================================================')
 
 ###############################################################################
 # Process categorical that inches abbreviations to continuous vars
-extract_num_from_catVar = lambda series: series.str.split().str[0].astype(np.float)
+extract_num_from_catVar = lambda series: series.str.split().str[0].astype(np.FLOAT,)
 
 columns = ['back_legroom', 'wheelbase', 'width', 'length', 'height', 
            'fuel_tank_volume', 'front_legroom', 'maximum_seating']
@@ -255,8 +250,8 @@ df = df[df.back_legroom.notna() & df.front_legroom.notna()
 # Convert variables by splitting string
 # Convert torque to torque_rpm
 df1 = df.torque.str.replace(',', '').str.split().str[0:4:3]
-df1 = pd.DataFrame([[np.nan, np.nan] if type(i).__name__ == 'float' 
-                    else np.asarray(i).astype('float') for i in df1])
+df1 = pd.DataFrame([[np.nan, np.nan] if type(i).__name__ == 'FLOAT,' 
+                    else np.asarray(i).astype('FLOAT,') for i in df1])
 df1.columns = ['torque_new', 'torque_rpm']
 
 # Concatenate new variables created by string split torque
@@ -271,7 +266,7 @@ del df1
 
 # Convert power into horsepower_rpm
 df1 = df.power.str.replace(',', '').str.split().str[0:4:3]
-df1 = pd.DataFrame([[np.nan, np.nan] if type(i).__name__ == 'float' else np.asarray(i).astype('float') for i in df1])
+df1 = pd.DataFrame([[np.nan, np.nan] if type(i).__name__ == 'FLOAT,' else np.asarray(i).astype('FLOAT,') for i in df1])
 df1.columns = ['horsepower_new', 'horsepower_rpm']
 
 # Concatenate new variables created by string split horsepoqwe
@@ -292,7 +287,7 @@ print('Median price:' +  str(round(df['price'].median(), 2)))
 print('======================================================================') 
 
 sns.histplot(x=df['price'], kde=True).set_title('Distribution of Price')
-plt.savefig('InitialPrice.png', dpi=my_dpi * 10, bbox_inches='tight')
+plt.savefig('InitialPrice.png', dpi=my_dpi*10, bbox_inches='tight')
 
 # Filter price less than $50,000
 df = df.loc[df['price'] <= 50000.0]
@@ -301,24 +296,24 @@ print('\nDimensions after filtering listings <= $50,000:',
 print('======================================================================') 
 
 sns.histplot(x=df['price'], kde=True).set_title('Distribution of Price Filtered <= $50,000')
-plt.savefig('Price_50kOrless.png', dpi=my_dpi * 10, bbox_inches='tight')
+plt.savefig('Price_50kOrless.png', dpi=my_dpi*10, bbox_inches='tight')
 print('======================================================================') 
 
 ###############################################################################
 print('\nExamine categorical variables to see if they should be retained:')
 print('\n')
-df_car_cat = df.select_dtypes(include = 'object')
+df_car_cat = df.select_dtypes(include = 'CHAR(25),')
 df_car_cat = df_car_cat.drop(['city', 'State', 'model_name', 'make_name', 'listing_color'],
-                     axis=1)
+                             axis=1)
 
 # Examine select categorical variables with price
 plt.rcParams.update({'font.size': 7})
 plt.xticks(rotation=90)
-fig, ax = plt.subplots(3, 2, figsize=(15, 10))
+fig, ax = plt.subplots(3, 2, figsize=(15,10))
 for var, subplot in zip(df_car_cat, ax.flatten()):
     sns.boxplot(x=var, y='price', data=df, ax=subplot)
 plt.tight_layout()  
-fig.savefig('QualVar_Boxplot.png', dpi=my_dpi * 10, bbox_inches='tight')
+fig.savefig('QualVar_Boxplot.png', dpi=my_dpi*10, bbox_inches='tight')
 
 del df_car_cat, fig, ax
 
@@ -327,7 +322,7 @@ plt.rcParams.update({'font.size': 7})
 sorted_nb = df.groupby(['listing_color'])['price'].median().sort_values()
 sns.boxplot(x=df['listing_color'], y=df['price'], order=list(sorted_nb.index))
 plt.xticks(rotation=90)
-plt.savefig('Price_listing_color.png', dpi=my_dpi * 10, bbox_inches='tight')
+plt.savefig('Price_listing_color.png', dpi=my_dpi*10, bbox_inches='tight')
 
 print('\nCount of listings with car color:') 
 print(df.listing_color.value_counts(ascending=True)) # Mostly black, UNKNOWN exists
@@ -356,7 +351,7 @@ print('======================================================================')
 
 # Merge data using left join on manufacturer name
 df = pd.merge(df, df1, how='left', left_on=['make_name'], 
-              right_on = ['make_name'])
+              right_on=['make_name'])
 df.drop_duplicates()
 
 del df1
@@ -368,12 +363,12 @@ print('======================================================================')
 ###############################################################################
 print('\nExamine quantitative variables to see if they should be retained:')
 print('\n')
-df_num = df.select_dtypes(include = ['float64', 'int64'])
+df_num = df.select_dtypes(include = ['FLOAT,', 'int64'])
 
 # Histograms
 plt.rcParams.update({'font.size': 15})
-df_num.hist(figsize=(16, 20), bins=50, xlabelsize=8, ylabelsize=8); 
-plt.savefig('QuantVar_Histograms.png', dpi=my_dpi * 10)
+df_num.hist(figsize=(16,20), bins=50, xlabelsize=8, ylabelsize=8); 
+plt.savefig('QuantVar_Histograms.png', dpi=my_dpi*10)
 
 # Correlations
 # Find features that are strongly correlated with price
@@ -391,7 +386,7 @@ plt.rcParams.update({'font.size': 2})
 sns.heatmap(corr, cmap='viridis', vmax=1.0, vmin=-1.0, linewidths=0.1, 
             annot=False, square=True);
 plt.title('Correlation Matrix with Spearman rho')
-plt.savefig('CorrelationMatrix_spearman.png', dpi=my_dpi * 10)
+plt.savefig('CorrelationMatrix_spearman.png', dpi=my_dpi*10)
 
 # Plot correlation matrix with thresholds
 plt.rcParams.update({'font.size': 2})
@@ -399,7 +394,7 @@ sns.heatmap(corr[(corr >= 0.8) | (corr <= -0.8)],
             cmap='viridis', vmax=1.0, vmin=-1.0, linewidths=0.1,
             annot=True, annot_kws={"size": 4}, square=True);
 plt.title('Correlation Matrix with Spearman rho >= 0.8 or <= -0.8')
-plt.savefig('CorrelationMatrix_thresholds_spearman.png', dpi=my_dpi * 10)
+plt.savefig('CorrelationMatrix_thresholds_spearman.png', dpi=my_dpi*10)
 
 ###############################################################################
 # Drop vars not using for modeling
@@ -410,9 +405,9 @@ print('=====================================================================')
 
 ###############################################################################
 # Change directory
-path = r'D:\UsedCarPrices_CarGurus\Data'
+path = '/mnt/UsedCars_Prices/Data'
 os.chdir(path)
 
 # Write processed data to csv
-df.to_csv('usedCars_final.csv', index=False, encoding='utf-8-sig')
+df.to_csv('usedCars_final.csv', index=False)
 ###############################################################################

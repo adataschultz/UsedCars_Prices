@@ -30,11 +30,11 @@ PATH_SAVED_TEST = '/opt/airflow/include/data/usedcars-testset.parquet'
 PARQUET_TRAIN = 'usedcars-trainset.parquet'
 PARQUET_TEST = 'usedcars-testset.parquet'
 
-TRAINSET_NAME = os.environ.get("GCP_DATASET_NAME", 'usedcars_train')
-TRAINTABLE_NAME = os.environ.get("GCP_TABLE_NAME", 'train')
+TRAINSET_NAME = os.environ.get('GCP_DATASET_NAME', 'usedcars_train')
+TRAINTABLE_NAME = os.environ.get('GCP_TABLE_NAME', 'train')
 
-TESTSET_NAME = os.environ.get("GCP_DATASET_NAME", 'usedcars_test')
-TESTTABLE_NAME = os.environ.get("GCP_TABLE_NAME", 'test')
+TESTSET_NAME = os.environ.get('GCP_DATASET_NAME', 'usedcars_test')
+TESTTABLE_NAME = os.environ.get('GCP_TABLE_NAME', 'test')
 
 with DAG(
     DAG_ID,
@@ -90,7 +90,7 @@ with DAG(
         task_id='gcs_to_bigquery_train',
         bucket=BUCKET_NAME,
         source_objects=['usedcars-trainset.parquet'],
-        source_format="PARQUET",
+        source_format='PARQUET',
         destination_project_dataset_table=f'{TRAINSET_NAME}.{TRAINTABLE_NAME}',
         schema_fields=[
             {'name': 'price', 'type': 'FLOAT64', 'mode': 'NULLABLE'}, 
@@ -132,7 +132,7 @@ with DAG(
         task_id='gcs_to_bigquery_test',
         bucket=BUCKET_NAME,
         source_objects=['usedcars-testset.parquet'],
-        source_format="PARQUET",
+        source_format='PARQUET',
         destination_project_dataset_table=f'{TESTSET_NAME}.{TESTTABLE_NAME}',
         schema_fields=[
             {'name': 'price', 'type': 'FLOAT64', 'mode': 'NULLABLE'}, 

@@ -1,5 +1,5 @@
 '''
-Airflow DAG for uploading data from  local file system to Google Cloud Storage and BigQuery
+Airflow DAG for uploading data from local file system to Google Cloud Storage and BigQuery
 '''
 
 from __future__ import annotations

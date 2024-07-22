@@ -2,100 +2,332 @@
 
 The structure of deploying models with a `Streamlit` frontend and `FastAPI` backend is as follows:
 ```
- |-README.md
- |-docker-compose.yml
- |-backend
- | |-Dockerfile
- | |-requirements.txt
- | |-main.py
- | |-xgboost
- | | |-model
- | | | |-usedcars_xgb_model.bin
- | |-lightgbm
- | | |-model
- | | | |-usedcars_lgbm_model.pkl
- | |-catboost
- | | |-model
- | | | |-catboost_training.json
- | | | |-test
- | | | | |-events.out.tfevents
- | | | |-usedcars_cat_model
- | | | |-test_error.tsv
- | | | |-learn_error.tsv
- | | | |-time_left.tsv
- | | | |-tmp
- | | | |-learn
- | | | | |-events.out.tfevents
- |-frontend
- | |-Dockerfile
- | |-requirements.txt
- | |-app.py
- | |-data
- | | |-usedCars_testSet.csv
- | | |-usedCars_trainSet.csv
- | |-static
- | | |-data_quality_dataset_report_columnLevel.html
- | | |-data_drift_column_report_backlegroom.html
- | | |-data_drift_report.html
- | | |-data_qualityTestPresets_report.html
- | | |-data_integrity_dataset_report_PriceListedData.html
- | | |-DataDriftTable_kl_report.html
- | | |-data_stabilityTestPresets_report.html
- | | |-data_quality_dataset_report_DatasetCorrelationsMetric.html
- | | |-DataQualityPreset_report.html
- | | |-data_driftTestPresets_report_stattest_psi.html
- | | |-data_integrity_dataset_report_SummaryMissing.html
- | | |-no_target_performance_report_horsepower_mileage.html
- | | |-train_domColorState.html
- | | |-test_domColorState.html   
- | | |-train_monthPriceState.html
- | | |-test_monthPriceState.html  
- | | |-train_priceColor.html
- | | |-test_priceColor.html    
- | | |-train_priceColorState.html
- | | |-test_priceColorState.html  
- | | |-traintest_priceState.html
- | | |-train_yearState.html
- | | |-test_yearState.html
- | |-xgboost
- | | |-train_model_booster.py
- | | |-model
- | | | |-usedcars_xgb_model.bin
- | | |-results
- | | | |-XGB_FeatureImportance.png
- | | | |-XGB_ShapSummary_TestSet.png
- | | | |-XGB_ShapForce_TrainSet.png
- | | | |-XGB_ShapSummary_TrainSet.png
- | | | |-XGB_ShapForce_TestSet.png
- | |-lightgbm
- | | |-model
- | | | |-usedcars_lgbm_model.pkl
- | | |-results
- | | | |-LGBM_ShapSummary_TestSet.png
- | | | |-LGBM_ShapSummary_TrainSet.png
- | | | |-LGBM_ShapForce_TestSet.png
- | | | |-LGBM_ShapForce_TrainSet.png
- | | | |-LGBM_FeatureImportance.png
- | | |-train_model.py
- | |-catboost
- | | |-model
- | | | |-catboost_training.json
- | | | |-test
- | | | | |-events.out.tfevents
- | | | |-usedcars_cat_model
- | | | |-test_error.tsv
- | | | |-learn_error.tsv
- | | | |-time_left.tsv
- | | | |-tmp
- | | | |-learn
- | | | | |-events.out.tfevents
- | | |-results
- | | | |-Cat_ShapSummary_TestSet.png
- | | | |-Cat_ShapSummary_TrainSet.png
- | | | |-Cat_FeatureImportance.png
- | | | |-Cat_ShapForce_TestSet.png
- | | | |-Cat_ShapForce_TrainSet.png
- | | |-train_model.py
+├── backend
+│   ├── catboost
+│   │   └── model
+│   │       ├── catboost_training.json
+│   │       ├── learn
+│   │       │   └── events.out.tfevents
+│   │       ├── learn_error.tsv
+│   │       ├── test
+│   │       │   └── events.out.tfevents
+│   │       ├── test_error.tsv
+│   │       ├── time_left.tsv
+│   │       └── usedcars_cat_model
+│   ├── Dockerfile
+│   ├── lightgbm
+│   │   └── model
+│   │       └── usedcars_lgbm_model.pkl
+│   ├── main.py
+│   ├── requirements.txt
+│   └── xgboost
+│       └── model
+│           └── usedcars_xgb_model.bin
+├── docker-compose.yml
+├── frontend
+│   ├── app.py
+│   ├── catboost
+│   │   ├── mlruns
+│   │   │   ├── 0
+│   │   │   │   ├── 5af33b60af8040cea7abc3ff7f3a9462
+│   │   │   │   │   ├── artifacts
+│   │   │   │   │   │   └── usedcars_cat_model
+│   │   │   │   │   │       ├── conda.yaml
+│   │   │   │   │   │       ├── metadata
+│   │   │   │   │   │       │   ├── conda.yaml
+│   │   │   │   │   │       │   ├── MLmodel
+│   │   │   │   │   │       │   ├── python_env.yaml
+│   │   │   │   │   │       │   └── requirements.txt
+│   │   │   │   │   │       ├── MLmodel
+│   │   │   │   │   │       ├── model.cb
+│   │   │   │   │   │       ├── python_env.yaml
+│   │   │   │   │   │       └── requirements.txt
+│   │   │   │   │   ├── meta.yaml
+│   │   │   │   │   ├── metrics
+│   │   │   │   │   │   ├── num_features
+│   │   │   │   │   │   ├── num_samples
+│   │   │   │   │   │   ├── test_mae
+│   │   │   │   │   │   ├── test_mse
+│   │   │   │   │   │   ├── test_r2
+│   │   │   │   │   │   ├── test_rmse
+│   │   │   │   │   │   ├── train_mae
+│   │   │   │   │   │   ├── train_mse
+│   │   │   │   │   │   ├── train_r2
+│   │   │   │   │   │   └── train_rmse
+│   │   │   │   │   ├── params
+│   │   │   │   │   │   ├── depth
+│   │   │   │   │   │   ├── early_stopping_rounds
+│   │   │   │   │   │   ├── l2_leaf_reg
+│   │   │   │   │   │   ├── learning_rate
+│   │   │   │   │   │   ├── logging_level
+│   │   │   │   │   │   ├── loss_function
+│   │   │   │   │   │   ├── min_data_in_leaf
+│   │   │   │   │   │   ├── n_estimators
+│   │   │   │   │   │   ├── one_hot_max_size
+│   │   │   │   │   │   ├── random_state
+│   │   │   │   │   │   ├── rsm
+│   │   │   │   │   │   ├── task_type
+│   │   │   │   │   │   └── train_dir
+│   │   │   │   │   └── tags
+│   │   │   │   │       ├── data scientist
+│   │   │   │   │       ├── mlflow.log-model.history
+│   │   │   │   │       ├── mlflow.runName
+│   │   │   │   │       ├── mlflow.source.git.commit
+│   │   │   │   │       ├── mlflow.source.name
+│   │   │   │   │       ├── mlflow.source.type
+│   │   │   │   │       ├── mlflow.user
+│   │   │   │   │       └── usedcars_model
+│   │   │   │   └── meta.yaml
+│   │   │   └── models
+│   │   │       └── usedcars_cat_model
+│   │   │           ├── meta.yaml
+│   │   │           └── version-1
+│   │   │               └── meta.yaml
+│   │   ├── model
+│   │   │   ├── catboost_training.json
+│   │   │   ├── learn
+│   │   │   │   └── events.out.tfevents
+│   │   │   ├── learn_error.tsv
+│   │   │   ├── test
+│   │   │   │   └── events.out.tfevents
+│   │   │   ├── test_error.tsv
+│   │   │   ├── time_left.tsv
+│   │   │   └── usedcars_cat_model
+│   │   ├── results
+│   │   │   ├── Cat_FeatureImportance.png
+│   │   │   ├── Cat_ShapForce_TestSet.png
+│   │   │   ├── Cat_ShapForce_TrainSet.png
+│   │   │   ├── Cat_ShapSummary_TestSet.png
+│   │   │   └── Cat_ShapSummary_TrainSet.png
+│   │   └── train_model.py
+│   ├── data
+│   │   ├── usedCars_evalSet.csv
+│   │   ├── usedCars_testSet.parquet.gzip
+│   │   └── usedCars_trainSet.parquet.gzip
+│   ├── Dockerfile
+│   ├── lightgbm
+│   │   ├── mlruns
+│   │   │   ├── 0
+│   │   │   │   ├── 129fd4cfb05a49229d04c515bcf35e23
+│   │   │   │   │   ├── artifacts
+│   │   │   │   │   │   ├── feature_importance_gain.json
+│   │   │   │   │   │   ├── feature_importance_gain.png
+│   │   │   │   │   │   ├── feature_importance_split.json
+│   │   │   │   │   │   ├── feature_importance_split.png
+│   │   │   │   │   │   ├── model
+│   │   │   │   │   │   │   ├── conda.yaml
+│   │   │   │   │   │   │   ├── metadata
+│   │   │   │   │   │   │   │   ├── conda.yaml
+│   │   │   │   │   │   │   │   ├── MLmodel
+│   │   │   │   │   │   │   │   ├── python_env.yaml
+│   │   │   │   │   │   │   │   └── requirements.txt
+│   │   │   │   │   │   │   ├── MLmodel
+│   │   │   │   │   │   │   ├── model.pkl
+│   │   │   │   │   │   │   ├── python_env.yaml
+│   │   │   │   │   │   │   └── requirements.txt
+│   │   │   │   │   │   └── usedcars_lgbm_model
+│   │   │   │   │   │       ├── conda.yaml
+│   │   │   │   │   │       ├── metadata
+│   │   │   │   │   │       │   ├── conda.yaml
+│   │   │   │   │   │       │   ├── MLmodel
+│   │   │   │   │   │       │   ├── python_env.yaml
+│   │   │   │   │   │       │   └── requirements.txt
+│   │   │   │   │   │       ├── MLmodel
+│   │   │   │   │   │       ├── model.pkl
+│   │   │   │   │   │       ├── python_env.yaml
+│   │   │   │   │   │       └── requirements.txt
+│   │   │   │   │   ├── inputs
+│   │   │   │   │   │   ├── 1d9892b9ad55b1c82b408b0effbe4e54
+│   │   │   │   │   │   │   └── meta.yaml
+│   │   │   │   │   │   └── cb2b26149b2bf2b666d8e58a9e1143d2
+│   │   │   │   │   │       └── meta.yaml
+│   │   │   │   │   ├── meta.yaml
+│   │   │   │   │   ├── metrics
+│   │   │   │   │   │   ├── num_features
+│   │   │   │   │   │   ├── num_samples
+│   │   │   │   │   │   ├── test_mae
+│   │   │   │   │   │   ├── test_mse
+│   │   │   │   │   │   ├── test_r2
+│   │   │   │   │   │   ├── test_rmse
+│   │   │   │   │   │   ├── train_mae
+│   │   │   │   │   │   ├── train_mse
+│   │   │   │   │   │   ├── train_r2
+│   │   │   │   │   │   └── train_rmse
+│   │   │   │   │   ├── params
+│   │   │   │   │   │   ├── bagging_freq
+│   │   │   │   │   │   ├── boosting_type
+│   │   │   │   │   │   ├── colsample_bytree
+│   │   │   │   │   │   ├── device
+│   │   │   │   │   │   ├── gpu_device_id
+│   │   │   │   │   │   ├── gpu_platform_id
+│   │   │   │   │   │   ├── lambda_l1
+│   │   │   │   │   │   ├── lambda_l2
+│   │   │   │   │   │   ├── learning_rate
+│   │   │   │   │   │   ├── max_depth
+│   │   │   │   │   │   ├── metric
+│   │   │   │   │   │   ├── min_child_samples
+│   │   │   │   │   │   ├── min_child_weight
+│   │   │   │   │   │   ├── min_split_gain
+│   │   │   │   │   │   ├── n_estimators
+│   │   │   │   │   │   ├── num_leaves
+│   │   │   │   │   │   ├── random_state
+│   │   │   │   │   │   ├── reg_alpha
+│   │   │   │   │   │   ├── reg_lambda
+│   │   │   │   │   │   ├── subsample
+│   │   │   │   │   │   ├── subsample_for_bin
+│   │   │   │   │   │   ├── subsample_freq
+│   │   │   │   │   │   └── verbosity
+│   │   │   │   │   └── tags
+│   │   │   │   │       ├── data scientist
+│   │   │   │   │       ├── mlflow.log-model.history
+│   │   │   │   │       ├── mlflow.runName
+│   │   │   │   │       ├── mlflow.source.git.commit
+│   │   │   │   │       ├── mlflow.source.name
+│   │   │   │   │       ├── mlflow.source.type
+│   │   │   │   │       ├── mlflow.user
+│   │   │   │   │       └── usedcars_model
+│   │   │   │   ├── datasets
+│   │   │   │   │   ├── 5e2e0b833aa9e4c106d3eafc62d476fd
+│   │   │   │   │   │   └── meta.yaml
+│   │   │   │   │   └── 9d1495e8966956b86995dcd6a6fd2bab
+│   │   │   │   │       └── meta.yaml
+│   │   │   │   └── meta.yaml
+│   │   │   └── models
+│   │   │       └── usedcars_lgbm_model
+│   │   │           ├── meta.yaml
+│   │   │           └── version-1
+│   │   │               └── meta.yaml
+│   │   ├── model
+│   │   │   └── usedcars_lgbm_model.pkl
+│   │   ├── results
+│   │   │   ├── LGBM_FeatureImportance.png
+│   │   │   ├── LGBM_ShapForce_TestSet.png
+│   │   │   ├── LGBM_ShapForce_TrainSet.png
+│   │   │   ├── LGBM_ShapSummary_TestSet.png
+│   │   │   └── LGBM_ShapSummary_TrainSet.png
+│   │   └── train_model.py
+│   ├── requirements.txt
+│   ├── static
+│   │   ├── data_drift_column_report_backlegroom.html
+│   │   ├── data_drift_report.html
+│   │   ├── DataDriftTable_kl_report.html
+│   │   ├── data_driftTestPresets_report_stattest_psi.html
+│   │   ├── data_integrity_dataset_report_PriceListedData.html
+│   │   ├── data_integrity_dataset_report_SummaryMissing.html
+│   │   ├── data_quality_dataset_report_columnLevel.html
+│   │   ├── data_quality_dataset_report_DatasetCorrelationsMetric.html
+│   │   ├── DataQualityPreset_report.html
+│   │   ├── data_qualityTestPresets_report.html
+│   │   ├── data_stabilityTestPresets_report.html
+│   │   ├── no_target_performance_report_horsepower_mileage.html
+│   │   ├── test_domColorState.html
+│   │   ├── test_monthPriceState.html
+│   │   ├── test_priceColor.html
+│   │   ├── test_priceColorState.html
+│   │   ├── test_yearState.html
+│   │   ├── train_domColorState.html
+│   │   ├── train_monthPriceState.html
+│   │   ├── train_priceColor.html
+│   │   ├── train_priceColorState.html
+│   │   ├── traintest_priceState.html
+│   │   └── train_yearState.html
+│   ├── streamlit_app_metrics.py
+│   ├── streamlit_app.py
+│   ├── streamlit_app_script.py
+│   └── xgboost
+│       ├── mlruns
+│       │   ├── 0
+│       │   │   ├── 5fd3dfacad3c4eb1b7e6a72789776923
+│       │   │   │   ├── artifacts
+│       │   │   │   │   ├── feature_importance_weight.json
+│       │   │   │   │   ├── feature_importance_weight.png
+│       │   │   │   │   ├── model
+│       │   │   │   │   │   ├── conda.yaml
+│       │   │   │   │   │   ├── metadata
+│       │   │   │   │   │   │   ├── conda.yaml
+│       │   │   │   │   │   │   ├── MLmodel
+│       │   │   │   │   │   │   ├── python_env.yaml
+│       │   │   │   │   │   │   └── requirements.txt
+│       │   │   │   │   │   ├── MLmodel
+│       │   │   │   │   │   ├── model.xgb
+│       │   │   │   │   │   ├── python_env.yaml
+│       │   │   │   │   │   └── requirements.txt
+│       │   │   │   │   └── usedcars_xgb_model
+│       │   │   │   │       ├── conda.yaml
+│       │   │   │   │       ├── metadata
+│       │   │   │   │       │   ├── conda.yaml
+│       │   │   │   │       │   ├── MLmodel
+│       │   │   │   │       │   ├── python_env.yaml
+│       │   │   │   │       │   └── requirements.txt
+│       │   │   │   │       ├── MLmodel
+│       │   │   │   │       ├── model.xgb
+│       │   │   │   │       ├── python_env.yaml
+│       │   │   │   │       └── requirements.txt
+│       │   │   │   ├── inputs
+│       │   │   │   │   └── 748dd6869bccc05b486d571777ff6d6d
+│       │   │   │   │       └── meta.yaml
+│       │   │   │   ├── meta.yaml
+│       │   │   │   ├── metrics
+│       │   │   │   │   ├── num_features
+│       │   │   │   │   ├── num_samples
+│       │   │   │   │   ├── test_mae
+│       │   │   │   │   ├── test_mse
+│       │   │   │   │   ├── test_r2
+│       │   │   │   │   ├── test_rmse
+│       │   │   │   │   ├── train_mae
+│       │   │   │   │   ├── train_mse
+│       │   │   │   │   ├── train_r2
+│       │   │   │   │   └── train_rmse
+│       │   │   │   ├── params
+│       │   │   │   │   ├── booster
+│       │   │   │   │   ├── colsample_bylevel
+│       │   │   │   │   ├── colsample_bytree
+│       │   │   │   │   ├── custom_metric
+│       │   │   │   │   ├── device
+│       │   │   │   │   ├── early_stopping_rounds
+│       │   │   │   │   ├── gamma
+│       │   │   │   │   ├── learning_rate
+│       │   │   │   │   ├── max_depth
+│       │   │   │   │   ├── maximize
+│       │   │   │   │   ├── metric
+│       │   │   │   │   ├── min_child_weight
+│       │   │   │   │   ├── n_estimators
+│       │   │   │   │   ├── num_boost_round
+│       │   │   │   │   ├── objective
+│       │   │   │   │   ├── random_state
+│       │   │   │   │   ├── reg_alpha
+│       │   │   │   │   ├── reg_lambda
+│       │   │   │   │   ├── scale_pos_weight
+│       │   │   │   │   ├── subsample
+│       │   │   │   │   ├── tree_method
+│       │   │   │   │   ├── use_label_encoder
+│       │   │   │   │   ├── verbose_eval
+│       │   │   │   │   └── verbosity
+│       │   │   │   └── tags
+│       │   │   │       ├── mlflow.log-model.history
+│       │   │   │       ├── mlflow.runName
+│       │   │   │       ├── mlflow.source.git.commit
+│       │   │   │       ├── mlflow.source.name
+│       │   │   │       ├── mlflow.source.type
+│       │   │   │       └── mlflow.user
+│       │   │   ├── datasets
+│       │   │   │   └── 5bb29f5a5bf849d94254701b4ad6b709
+│       │   │   │       └── meta.yaml
+│       │   │   └── meta.yaml
+│       │   └── models
+│       │       └── usedcars_xgb_model
+│       │           ├── meta.yaml
+│       │           └── version-1
+│       │               └── meta.yaml
+│       ├── model
+│       │   └── usedcars_xgb_model.bin
+│       ├── results
+│       │   ├── XGB_FeatureImportance.png
+│       │   ├── XGB_ShapForce_TestSet.png
+│       │   ├── XGB_ShapForce_TrainSet.png
+│       │   ├── XGB_ShapSummary_TestSet.png
+│       │   └── XGB_ShapSummary_TrainSet.png
+│       └── train_model_booster.py
 ```
 
 ## To run the app locally using `Docker`:
